@@ -1,0 +1,49 @@
+{
+  "@@locale": "en",
+  "appTitle": "PixelWeather",
+  "tabNow": "Now",
+  "tabForecast": "Forecast",
+  "tabFavorites": "Favorites",
+  "search": "Search",
+  "searchTitle": "Search",
+  "searchHint": "Search city",
+  "useMyLocation": "Use my location",
+  "locationPermissionDeniedTitle": "Location permission denied",
+  "locationPermissionDeniedBody": "Enable location access in settings or search for a city.",
+  "locationServicesDisabledTitle": "Location services are off",
+  "locationServicesDisabledBody": "Turn on location services to use GPS weather.",
+  "locationTimeoutTitle": "Location timeout",
+  "locationTimeoutBody": "We couldn't get a GPS fix. Try again or search for a city.",
+  "noSearchResultsTitle": "No results",
+  "noSearchResultsBody": "Try a different city name.",
+  "loading": "Loading...",
+  "errorGeneric": "Something went wrong.",
+  "retry": "Retry",
+  "addFavorite": "Add favorite",
+  "removeFavorite": "Remove favorite",
+  "unitsMetric": "Units: Celsius",
+  "unitsImperial": "Units: Fahrenheit",
+  "feelsLike": "Feels like",
+  "humidity": "Humidity",
+  "wind": "Wind",
+  "hourlyForecast": "Hourly",
+  "dailyForecast": "5-day",
+  "forecastUnavailableTitle": "No forecast data",
+  "forecastUnavailableBody": "Forecast data is unavailable for this location.",
+  "emptyNowTitle": "No weather yet",
+  "emptyNowBody": "Search for a city or enable location to see current conditions.",
+  "emptyForecastTitle": "No forecast yet",
+  "emptyForecastBody": "Select a location to view hourly and daily forecasts.",
+  "emptyFavoritesTitle": "No favorites yet",
+  "emptyFavoritesBody": "Save locations to access them quickly.",
+  "offlineBadge": "Offline",
+  "lastUpdated": "Last updated {time}",
+  "@lastUpdated": {
+    "description": "Timestamp for the last successful weather update.",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
+}
