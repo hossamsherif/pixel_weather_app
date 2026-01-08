@@ -22,6 +22,8 @@ class LocationServiceException implements Exception {
 
 abstract class LocationService {
   Future<Position> getCurrentPosition();
+
+  Future<bool> canAccessLocation();
 }
 
 class GeolocatorLocationService implements LocationService {
@@ -65,5 +67,17 @@ class GeolocatorLocationService implements LocationService {
       }
       throw const LocationServiceException(LocationServiceError.timeout);
     }
+  }
+
+  @override
+  Future<bool> canAccessLocation() async {
+    final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return false;
+    }
+
+    final LocationPermission permission = await Geolocator.checkPermission();
+    return permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
   }
 }
