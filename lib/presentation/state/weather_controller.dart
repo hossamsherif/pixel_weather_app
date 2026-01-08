@@ -10,7 +10,19 @@ import 'location_service.dart';
 class WeatherController extends AsyncNotifier<WeatherReport?> {
   @override
   Future<WeatherReport?> build() async {
-    return null;
+    final LocationService locationService = ref.read(locationServiceProvider);
+    final bool canAccess = await locationService.canAccessLocation();
+    if (!canAccess) {
+      return null;
+    }
+    final WeatherRepository repo = ref.read(weatherRepositoryProvider);
+    final Units units = ref.read(unitsProvider);
+    final position = await locationService.getCurrentPosition();
+    final WeatherLocation location = await repo.resolveLocation(
+      latitude: position.latitude,
+      longitude: position.longitude,
+    );
+    return repo.getWeather(location: location, units: units);
   }
 
   Future<void> loadForLocation(WeatherLocation location) async {
