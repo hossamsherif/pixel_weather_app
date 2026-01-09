@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:pixel_weather_app/domain/models/location.dart';
 
 import '../../app_routes.dart';
 import '../../domain/models/units.dart';
@@ -27,7 +28,13 @@ class ForecastScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => context.pushNamed(AppRoutes.favorites),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+              return;
+            }
+            context.goNamed(AppRoutes.favorites);
+          },
           tooltip: strings.tabFavorites,
           icon: const Icon(Icons.menu),
         ),
@@ -81,25 +88,34 @@ class ForecastScreen extends ConsumerWidget {
                     .watch(favoritesControllerProvider)
                     .any((item) => item.cacheKey == report.location.cacheKey);
 
+                final Widget summaryCard = WeatherSummaryCard(
+                  report: report,
+                  units: units,
+                  strings: strings,
+                  isFavorite: isFavorite,
+                  onToggleFavorite: () {
+                    final favoritesController = ref.read(
+                      favoritesControllerProvider.notifier,
+                    );
+                    if (isFavorite) {
+                      favoritesController.remove(report.location);
+                    } else {
+                      favoritesController.add(report.location);
+                    }
+                  },
+                );
+                final Widget summaryCardWithHero = isFavorite
+                    ? Hero(
+                        tag: _favoriteHeroTag(report.location),
+                        flightShuttleBuilder: _favoriteHeroFlightShuttle,
+                        child: summaryCard,
+                      )
+                    : summaryCard;
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    WeatherSummaryCard(
-                      report: report,
-                      units: units,
-                      strings: strings,
-                      isFavorite: isFavorite,
-                      onToggleFavorite: () {
-                        final favoritesController = ref.read(
-                          favoritesControllerProvider.notifier,
-                        );
-                        if (isFavorite) {
-                          favoritesController.remove(report.location);
-                        } else {
-                          favoritesController.add(report.location);
-                        }
-                      },
-                    ),
+                    summaryCardWithHero,
                     const SizedBox(height: 16),
                     if (report.hourly.isEmpty && report.daily.isEmpty)
                       AppStateCard(
@@ -306,4 +322,23 @@ class _DailyForecastTile extends StatelessWidget {
         return 'F';
     }
   }
+}
+
+String _favoriteHeroTag(WeatherLocation location) {
+  return 'favorite-${location.cacheKey}';
+}
+
+Widget _favoriteHeroFlightShuttle(
+  BuildContext flightContext,
+  Animation<double> animation,
+  HeroFlightDirection flightDirection,
+  BuildContext fromHeroContext,
+  BuildContext toHeroContext,
+) {
+  final Hero fromHero = fromHeroContext.widget as Hero;
+  final Widget heroChild = fromHero.child;
+  return Material(
+    type: MaterialType.transparency,
+    child: ClipRect(child: heroChild),
+  );
 }
