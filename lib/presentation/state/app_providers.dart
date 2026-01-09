@@ -1,10 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../data/cache/weather_cache.dart';
 import '../../data/favorites/favorites_store.dart';
+import '../../data/open_weather/open_weather_mapper.dart';
 import '../../data/open_weather/open_weather_repository.dart';
 import '../../domain/models/location.dart';
 import '../../domain/models/units.dart';
+import '../../domain/models/weather.dart';
 import '../../domain/repositories/weather_repository.dart';
 import 'location_service.dart';
 
@@ -33,6 +36,25 @@ final Provider<FavoritesStore> favoritesStoreProvider =
 
 final NotifierProvider<SearchQueryController, String> searchQueryProvider =
     NotifierProvider<SearchQueryController, String>(SearchQueryController.new);
+
+final cachedWeatherProvider =
+    FutureProvider.family<WeatherReport?, WeatherLocation>((
+      ref,
+      location,
+    ) async {
+      final SharedPreferences prefs = ref.watch(sharedPreferencesProvider);
+      final WeatherCache cache = WeatherCache(prefs);
+      final entry = await cache.read(location.cacheKey);
+      if (entry == null) {
+        return null;
+      }
+      return const OpenWeatherMapper().toReport(
+        response: entry.payload,
+        location: location,
+        updatedAt: entry.storedAt,
+        dataSource: WeatherDataSource.cache,
+      );
+    });
 
 final FutureProvider<List<WeatherLocation>> searchResultsProvider =
     FutureProvider.autoDispose<List<WeatherLocation>>((ref) async {

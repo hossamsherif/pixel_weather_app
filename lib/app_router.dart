@@ -8,34 +8,40 @@ import 'presentation/screens/search_screen.dart';
 
 GoRouter createRouter() {
   return GoRouter(
-    initialLocation: '/forecast',
+    initialLocation: '/favorites/forecast',
     routes: <RouteBase>[
-      GoRoute(
-        path: '/forecast',
-        name: AppRoutes.forecast,
-        builder: (context, state) => const ForecastScreen(),
-      ),
       GoRoute(
         path: '/favorites',
         name: AppRoutes.favorites,
-        pageBuilder: (context, state) => CustomTransitionPage<void>(
-          key: state.pageKey,
-          child: const FavoritesScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            final Animation<double> curved = CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
-            );
-            return FadeTransition(
-              opacity: curved,
-              child: ScaleTransition(
-                scale: Tween<double>(begin: 0.9, end: 1).animate(curved),
-                alignment: Alignment.topLeft,
-                child: child,
-              ),
-            );
-          },
-        ),
+        builder: (context, state) => const FavoritesScreen(),
+        routes: <RouteBase>[
+          GoRoute(
+            path: 'forecast',
+            name: AppRoutes.forecast,
+            pageBuilder: (context, state) => CustomTransitionPage<void>(
+              key: state.pageKey,
+              child: const ForecastScreen(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                    final Animation<double> curved = CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    );
+                    return FadeTransition(
+                      opacity: curved,
+                      child: ScaleTransition(
+                        scale: Tween<double>(
+                          begin: 0.92,
+                          end: 1,
+                        ).animate(curved),
+                        alignment: Alignment.topLeft,
+                        child: child,
+                      ),
+                    );
+                  },
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: '/search',
