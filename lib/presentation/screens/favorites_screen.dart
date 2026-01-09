@@ -24,48 +24,60 @@ class FavoritesScreen extends ConsumerWidget {
       weatherControllerProvider,
     );
     final WeatherReport? currentReport = weatherState.value;
-    final List<Widget> children = <Widget>[];
 
-    if (currentReport != null &&
-        currentReport.dataSource == WeatherDataSource.cache) {
-      children.add(
-        Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: AppStateCard(
-            title: strings.offlineBadge,
-            message: strings.lastUpdated(
-              currentReport.updatedAt.toLocal().toString(),
+    final Widget? offlineBadge =
+        currentReport != null &&
+            currentReport.dataSource == WeatherDataSource.cache
+        ? Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: AppStateCard(
+              title: strings.offlineBadge,
+              message: strings.lastUpdated(
+                currentReport.updatedAt.toLocal().toString(),
+              ),
+              icon: Icons.cloud_off_outlined,
             ),
-            icon: Icons.cloud_off_outlined,
-          ),
-        ),
-      );
-    }
+          )
+        : null;
 
-    if (favorites.isEmpty) {
-      children.add(
-        AppStateCard(
-          title: strings.emptyFavoritesTitle,
-          message: strings.emptyFavoritesBody,
-          icon: Icons.favorite_border,
-        ),
-      );
-    } else {
-      for (final WeatherLocation favorite in favorites) {
-        children.add(
-          _FavoriteRow(favorite: favorite, currentReport: currentReport),
-        );
-        children.add(const SizedBox(height: 8));
-      }
+    final Widget body = favorites.isEmpty
+        ? ListView(
+            padding: const EdgeInsets.all(16),
+            children: <Widget>[
+              if (offlineBadge != null) offlineBadge,
+              AppStateCard(
+                title: strings.emptyFavoritesTitle,
+                message: strings.emptyFavoritesBody,
+                icon: Icons.favorite_border,
+              ),
+            ],
+          )
+        : ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: favorites.length + (offlineBadge == null ? 0 : 1),
+            itemBuilder: (context, index) {
+              if (offlineBadge != null && index == 0) {
+                return offlineBadge;
+              }
 
-      if (children.isNotEmpty) {
-        children.removeLast();
-      }
-    }
+              final int offset = offlineBadge == null ? 0 : 1;
+              final int favoriteIndex = index - offset;
+              final WeatherLocation favorite = favorites[favoriteIndex];
+              final bool isLast = favoriteIndex == favorites.length - 1;
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: isLast ? 0 : 8),
+                child: _FavoriteRow(
+                  favorite: favorite,
+                  currentReport: currentReport,
+                ),
+              );
+            },
+          );
 
     return Scaffold(
       appBar: AppBar(title: Text(strings.tabFavorites)),
-      body: ListView(padding: const EdgeInsets.all(16), children: children),
+      body: body,
     );
   }
 }
@@ -80,7 +92,7 @@ class _FavoriteRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final Units units = ref.watch(unitsProvider);
     final AsyncValue<WeatherReport?> cachedWeather = ref.watch(
-      cachedWeatherProvider(favorite),
+      favoriteWeatherProvider(favorite),
     );
     final WeatherReport? selectedReport =
         currentReport?.location.cacheKey == favorite.cacheKey

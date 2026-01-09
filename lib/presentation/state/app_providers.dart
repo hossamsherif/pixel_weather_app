@@ -37,7 +37,9 @@ final Provider<FavoritesStore> favoritesStoreProvider =
 final NotifierProvider<SearchQueryController, String> searchQueryProvider =
     NotifierProvider<SearchQueryController, String>(SearchQueryController.new);
 
-final cachedWeatherProvider =
+const Duration _favoriteCacheTtl = Duration(hours: 1);
+
+final favoriteWeatherProvider =
     FutureProvider.family<WeatherReport?, WeatherLocation>((
       ref,
       location,
@@ -45,15 +47,33 @@ final cachedWeatherProvider =
       final SharedPreferences prefs = ref.watch(sharedPreferencesProvider);
       final WeatherCache cache = WeatherCache(prefs);
       final entry = await cache.read(location.cacheKey);
-      if (entry == null) {
-        return null;
+      if (entry != null) {
+        final Duration age = DateTime.now().difference(entry.storedAt);
+        if (age <= _favoriteCacheTtl) {
+          return const OpenWeatherMapper().toReport(
+            response: entry.payload,
+            location: location,
+            updatedAt: entry.storedAt,
+            dataSource: WeatherDataSource.cache,
+          );
+        }
       }
-      return const OpenWeatherMapper().toReport(
-        response: entry.payload,
-        location: location,
-        updatedAt: entry.storedAt,
-        dataSource: WeatherDataSource.cache,
-      );
+
+      final WeatherRepository repo = ref.watch(weatherRepositoryProvider);
+      final Units units = ref.watch(unitsProvider);
+      try {
+        return await repo.getWeather(location: location, units: units);
+      } catch (_) {
+        if (entry == null) {
+          return null;
+        }
+        return const OpenWeatherMapper().toReport(
+          response: entry.payload,
+          location: location,
+          updatedAt: entry.storedAt,
+          dataSource: WeatherDataSource.cache,
+        );
+      }
     });
 
 final FutureProvider<List<WeatherLocation>> searchResultsProvider =
