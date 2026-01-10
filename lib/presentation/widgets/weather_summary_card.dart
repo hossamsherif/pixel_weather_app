@@ -31,73 +31,76 @@ class WeatherSummaryCard extends StatelessWidget {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    report.location.displayName,
-                    style: textTheme.titleMedium,
-                  ),
-                ),
-                if (report.dataSource == WeatherDataSource.cache)
-                  Chip(
-                    label: Text(strings.offlineBadge),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                if (onToggleFavorite != null && isFavorite != null) ...[
-                  const SizedBox(width: 8),
-                  IconButton(
-                    onPressed: onToggleFavorite,
-                    tooltip: isFavorite!
-                        ? strings.removeFavorite
-                        : strings.addFavorite,
-                    icon: Icon(
-                      isFavorite! ? Icons.star : Icons.star_border_outlined,
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      report.location.displayName,
+                      style: textTheme.titleMedium,
                     ),
                   ),
+                  if (report.dataSource == WeatherDataSource.cache)
+                    Chip(
+                      label: Text(strings.offlineBadge),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                  if (onToggleFavorite != null && isFavorite != null) ...[
+                    const SizedBox(width: 8),
+                    IconButton(
+                      onPressed: onToggleFavorite,
+                      tooltip: isFavorite!
+                          ? strings.removeFavorite
+                          : strings.addFavorite,
+                      icon: Icon(
+                        isFavorite! ? Icons.star : Icons.star_border_outlined,
+                      ),
+                    ),
+                  ],
                 ],
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: <Widget>[
-                Icon(iconForCondition(current.condition.type), size: 32),
-                const SizedBox(width: 12),
-                Text(
-                  '${current.temperature.round()}°${_temperatureUnit(units)}',
-                  style: textTheme.headlineMedium,
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(current.condition.description, style: textTheme.bodyLarge),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 16,
-              runSpacing: 8,
-              children: <Widget>[
-                _StatItem(
-                  label: strings.feelsLike,
-                  value:
-                      '${current.feelsLike.round()}°${_temperatureUnit(units)}',
-                ),
-                _StatItem(
-                  label: strings.humidity,
-                  value: '${current.humidity}%',
-                ),
-                _StatItem(
-                  label: strings.wind,
-                  value: '${current.windSpeed.round()} ${_windUnit(units)}',
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(strings.lastUpdated(updated), style: textTheme.bodySmall),
-          ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: <Widget>[
+                  Icon(iconForCondition(current.condition.type), size: 32),
+                  const SizedBox(width: 12),
+                  Text(
+                    '${current.temperature.round()}°${_temperatureUnit(units)}',
+                    style: textTheme.headlineMedium,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(current.condition.description, style: textTheme.bodyLarge),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 16,
+                runSpacing: 8,
+                children: <Widget>[
+                  _StatItem(
+                    label: strings.feelsLike,
+                    value:
+                        '${current.feelsLike.round()}°${_temperatureUnit(units)}',
+                  ),
+                  _StatItem(
+                    label: strings.humidity,
+                    value: '${current.humidity}%',
+                  ),
+                  _StatItem(
+                    label: strings.wind,
+                    value: '${current.windSpeed.round()} ${_windUnit(units)}',
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(strings.lastUpdated(updated), style: textTheme.bodySmall),
+            ],
+          ),
         ),
       ),
     );
