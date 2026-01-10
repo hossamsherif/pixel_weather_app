@@ -37,7 +37,7 @@ class AppShell extends ConsumerWidget {
                 ? strings.unitsMetric
                 : strings.unitsImperial,
             icon: Text(
-              units == Units.metric ? '°C' : '°F',
+              units.displayValue,
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
