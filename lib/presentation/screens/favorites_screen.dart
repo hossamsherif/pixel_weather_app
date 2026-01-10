@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../app_routes.dart';
 import '../../domain/models/location.dart';
@@ -33,7 +34,9 @@ class FavoritesScreen extends ConsumerWidget {
             child: AppStateCard(
               title: strings.offlineBadge,
               message: strings.lastUpdated(
-                currentReport.updatedAt.toLocal().toString(),
+                DateFormat.yMMMd(
+                  Localizations.localeOf(context).toString(),
+                ).add_Hm().format(currentReport.updatedAt),
               ),
               icon: Icons.cloud_off_outlined,
             ),
@@ -76,7 +79,27 @@ class FavoritesScreen extends ConsumerWidget {
           );
 
     return Scaffold(
-      appBar: AppBar(title: Text(strings.tabFavorites)),
+      appBar: AppBar(
+        title: Text(strings.tabFavorites),
+        actions: [
+          IconButton(
+            onPressed: () {
+              ref.read(localeProvider.notifier).toggleLocale();
+              ref.read(weatherControllerProvider.notifier).refresh();
+            },
+            tooltip: 'Toggle Language',
+            icon: Text(
+              Localizations.localeOf(context).languageCode.toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          IconButton(
+            onPressed: () => context.pushNamed(AppRoutes.search),
+            tooltip: strings.search,
+            icon: const Icon(Icons.search),
+          ),
+        ],
+      ),
       body: body,
     );
   }

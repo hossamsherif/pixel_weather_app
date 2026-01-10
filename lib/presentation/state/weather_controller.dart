@@ -15,12 +15,17 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
 
   @override
   Future<WeatherReport?> build() async {
-    final WeatherRepository repo = ref.read(weatherRepositoryProvider);
-    final Units units = ref.read(unitsProvider);
+    final WeatherRepository repo = ref.watch(weatherRepositoryProvider);
+    final Units units = ref.watch(unitsProvider);
+    final String? languageCode = ref.watch(localeProvider)?.languageCode;
     final WeatherLocation? lastLocation = await _readLastLocation();
 
     if (lastLocation != null) {
-      return repo.getWeather(location: lastLocation, units: units);
+      return repo.getWeather(
+        location: lastLocation,
+        units: units,
+        languageCode: languageCode,
+      );
     }
 
     final LocationService locationService = ref.read(locationServiceProvider);
@@ -35,7 +40,11 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
       longitude: position.longitude,
     );
     await _saveLastLocation(location);
-    return repo.getWeather(location: location, units: units);
+    return repo.getWeather(
+      location: location,
+      units: units,
+      languageCode: languageCode,
+    );
   }
 
   Future<void> loadForLocation(WeatherLocation location) async {
@@ -44,7 +53,12 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
       await _saveLastLocation(location);
       final WeatherRepository repo = ref.read(weatherRepositoryProvider);
       final Units units = ref.read(unitsProvider);
-      return repo.getWeather(location: location, units: units);
+      final String? languageCode = ref.read(localeProvider)?.languageCode;
+      return repo.getWeather(
+        location: location,
+        units: units,
+        languageCode: languageCode,
+      );
     });
   }
 
@@ -60,7 +74,12 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
       );
       await _saveLastLocation(location);
       final Units units = ref.read(unitsProvider);
-      return repo.getWeather(location: location, units: units);
+      final String? languageCode = ref.read(localeProvider)?.languageCode;
+      return repo.getWeather(
+        location: location,
+        units: units,
+        languageCode: languageCode,
+      );
     });
   }
 

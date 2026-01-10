@@ -24,9 +24,12 @@ class WeatherSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String locale = Localizations.localeOf(context).toString();
     final TextTheme textTheme = Theme.of(context).textTheme;
     final CurrentWeather current = report.current;
-    final String updated = DateFormat.yMMMd().add_Hm().format(report.updatedAt);
+    final String updated = DateFormat.yMMMd(
+      locale,
+    ).add_Hm().format(report.updatedAt);
 
     return Card(
       child: Padding(

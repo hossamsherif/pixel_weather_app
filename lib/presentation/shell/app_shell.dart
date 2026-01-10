@@ -42,6 +42,17 @@ class AppShell extends ConsumerWidget {
             ),
           ),
           IconButton(
+            onPressed: () {
+              ref.read(localeProvider.notifier).toggleLocale();
+              ref.read(weatherControllerProvider.notifier).refresh();
+            },
+            tooltip: 'Toggle Language',
+            icon: Text(
+              Localizations.localeOf(context).languageCode.toUpperCase(),
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          IconButton(
             onPressed: () => context.pushNamed(AppRoutes.search),
             tooltip: strings.search,
             icon: const Icon(Icons.search),
