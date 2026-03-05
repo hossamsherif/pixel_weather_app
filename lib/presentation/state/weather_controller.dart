@@ -7,6 +7,7 @@ import '../../domain/models/location.dart';
 import '../../domain/models/units.dart';
 import '../../domain/models/weather.dart';
 import '../../domain/repositories/weather_repository.dart';
+import '../../core/services/widget_service.dart';
 import 'app_providers.dart';
 import 'location_service.dart';
 
@@ -21,11 +22,13 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
     final WeatherLocation? lastLocation = await _readLastLocation();
 
     if (lastLocation != null) {
-      return repo.getWeather(
+      final report = await repo.getWeather(
         location: lastLocation,
         units: units,
         languageCode: languageCode,
       );
+      WidgetService.updateWidget(report);
+      return report;
     }
 
     final LocationService locationService = ref.read(locationServiceProvider);
@@ -40,11 +43,13 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
       longitude: position.longitude,
     );
     await _saveLastLocation(location);
-    return repo.getWeather(
+    final report = await repo.getWeather(
       location: location,
       units: units,
       languageCode: languageCode,
     );
+    WidgetService.updateWidget(report);
+    return report;
   }
 
   Future<void> loadForLocation(WeatherLocation location) async {
@@ -54,11 +59,13 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
       final WeatherRepository repo = ref.read(weatherRepositoryProvider);
       final Units units = ref.read(unitsProvider);
       final String? languageCode = ref.read(localeProvider)?.languageCode;
-      return repo.getWeather(
+      final report = await repo.getWeather(
         location: location,
         units: units,
         languageCode: languageCode,
       );
+      WidgetService.updateWidget(report);
+      return report;
     });
   }
 
@@ -75,11 +82,13 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
       await _saveLastLocation(location);
       final Units units = ref.read(unitsProvider);
       final String? languageCode = ref.read(localeProvider)?.languageCode;
-      return repo.getWeather(
+      final report = await repo.getWeather(
         location: location,
         units: units,
         languageCode: languageCode,
       );
+      WidgetService.updateWidget(report);
+      return report;
     });
   }
 
