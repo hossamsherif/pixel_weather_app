@@ -36,6 +36,10 @@ struct WeatherProvider: TimelineProvider {
     }
 }
 
+extension Color {
+    static let brandTeal = Color(red: 15/255, green: 118/255, blue: 110/255) // #0F766E
+}
+
 struct WeatherWidgetEntryView : View {
     var entry: WeatherProvider.Entry
     @Environment(\.colorScheme) private var colorScheme
@@ -44,24 +48,23 @@ struct WeatherWidgetEntryView : View {
         VStack(alignment: .leading, spacing: 4) {
             Text(entry.location)
                 .font(.system(size: 12, weight: .bold, design: .monospaced))
-                .foregroundColor(colorScheme == .dark ? .gray : .gray.opacity(0.7))
+                .foregroundColor(colorScheme == .dark ? .gray : Color(white: 0.4))
                 .lineLimit(1)
 
             Text(entry.temperature)
                 .font(.system(size: 32, weight: .black, design: .monospaced))
-                .foregroundColor(colorScheme == .dark ? .white : .onSurface)
+                .foregroundColor(colorScheme == .dark ? .white : .black)
 
             Spacer()
 
             Text(entry.description)
                 .font(.system(size: 11, weight: .medium, design: .monospaced))
-                .foregroundColor(colorScheme == .dark ?
-                    Color.blue.opacity(0.8) :
-                    Color.blue.opacity(0.6))
+                .foregroundColor(colorScheme == .dark ? .blue.opacity(0.8) : .brandTeal)
                 .lineLimit(2)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .containerBackground(colorScheme == .dark ? Color.black.gradient : Color.white.gradient, for: .widget)
     }
 }
 
@@ -71,7 +74,6 @@ struct WeatherWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: WeatherProvider()) { entry in
             WeatherWidgetEntryView(entry: entry)
-                .containerBackground(.fill(.secondary), for: .widget)
         }
         .configurationDisplayName("Pixel Weather")
         .description("Quick view of the current weather.")
