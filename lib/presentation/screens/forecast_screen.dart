@@ -52,7 +52,18 @@ class ForecastScreen extends ConsumerWidget {
                 ? strings.unitsMetric
                 : strings.unitsImperial,
             icon: Text(
-              units == Units.metric ? 'C' : 'F',
+              units.displayValue,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              ref.read(localeProvider.notifier).toggleLocale();
+              ref.read(weatherControllerProvider.notifier).refresh();
+            },
+            tooltip: 'Toggle Language',
+            icon: Text(
+              Localizations.localeOf(context).languageCode.toUpperCase(),
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
@@ -264,7 +275,8 @@ class _HourlyForecastCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String time = DateFormat.Hm().format(forecast.time);
+    final String locale = Localizations.localeOf(context).toString();
+    final String time = DateFormat.Hm(locale).format(forecast.time);
     return Card(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -300,7 +312,8 @@ class _DailyForecastTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String dayLabel = DateFormat.E().format(forecast.date);
+    final String locale = Localizations.localeOf(context).toString();
+    final String dayLabel = DateFormat.E(locale).format(forecast.date);
     return Card(
       child: ListTile(
         leading: Icon(iconForCondition(forecast.condition.type)),

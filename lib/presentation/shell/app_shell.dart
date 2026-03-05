@@ -37,7 +37,18 @@ class AppShell extends ConsumerWidget {
                 ? strings.unitsMetric
                 : strings.unitsImperial,
             icon: Text(
-              units == Units.metric ? '°C' : '°F',
+              units.displayValue,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              ref.read(localeProvider.notifier).toggleLocale();
+              ref.read(weatherControllerProvider.notifier).refresh();
+            },
+            tooltip: 'Toggle Language',
+            icon: Text(
+              Localizations.localeOf(context).languageCode.toUpperCase(),
               style: Theme.of(context).textTheme.titleSmall,
             ),
           ),

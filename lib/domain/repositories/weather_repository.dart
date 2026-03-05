@@ -6,6 +6,7 @@ abstract class WeatherRepository {
   Future<WeatherReport> getWeather({
     required WeatherLocation location,
     Units units,
+    String? languageCode,
   });
 
   Future<List<WeatherLocation>> searchLocations({

@@ -71,6 +71,7 @@ class OpenWeatherClient {
     required double lat,
     required double lon,
     required Units units,
+    String? languageCode,
   }) async {
     _assertKey();
     final Uri uri = Uri.https(_host, '/data/2.5/onecall', <String, String>{
@@ -79,6 +80,7 @@ class OpenWeatherClient {
       'units': units.queryValue,
       'exclude': 'minutely,alerts',
       'appid': apiKey,
+      if (languageCode != null) 'lang': languageCode,
     });
 
     final http.Response response = await _httpClient.get(uri);
@@ -95,6 +97,7 @@ class OpenWeatherClient {
     required double lat,
     required double lon,
     required Units units,
+    String? languageCode,
   }) async {
     _assertKey();
     final Uri uri = Uri.https(_host, '/data/2.5/weather', <String, String>{
@@ -102,6 +105,7 @@ class OpenWeatherClient {
       'lon': '$lon',
       'units': units.queryValue,
       'appid': apiKey,
+      if (languageCode != null) 'lang': languageCode,
     });
 
     final http.Response response = await _httpClient.get(uri);
@@ -118,6 +122,7 @@ class OpenWeatherClient {
     required double lat,
     required double lon,
     required Units units,
+    String? languageCode,
   }) async {
     _assertKey();
     final Uri uri = Uri.https(_host, '/data/2.5/forecast', <String, String>{
@@ -125,6 +130,7 @@ class OpenWeatherClient {
       'lon': '$lon',
       'units': units.queryValue,
       'appid': apiKey,
+      if (languageCode != null) 'lang': languageCode,
     });
 
     final http.Response response = await _httpClient.get(uri);

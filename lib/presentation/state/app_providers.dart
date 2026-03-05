@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -86,11 +87,29 @@ final FutureProvider<List<WeatherLocation>> searchResultsProvider =
       return repo.searchLocations(query: query);
     });
 
+final NotifierProvider<LocaleController, Locale?> localeProvider =
+    NotifierProvider<LocaleController, Locale?>(LocaleController.new);
+
 class UnitsController extends Notifier<Units> {
   @override
   Units build() => Units.metric;
 
   void setUnits(Units units) => state = units;
+}
+
+class LocaleController extends Notifier<Locale?> {
+  @override
+  Locale? build() => null;
+
+  void setLocale(Locale? locale) => state = locale;
+
+  void toggleLocale() {
+    if (state?.languageCode == 'ar') {
+      state = const Locale('en');
+    } else {
+      state = const Locale('ar');
+    }
+  }
 }
 
 class SearchQueryController extends Notifier<String> {

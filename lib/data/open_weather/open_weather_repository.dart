@@ -48,6 +48,7 @@ class OpenWeatherRepository implements WeatherRepository {
   Future<WeatherReport> getWeather({
     required WeatherLocation location,
     Units units = Units.metric,
+    String? languageCode,
   }) async {
     final String locationId = location.cacheKey;
     try {
@@ -55,6 +56,7 @@ class OpenWeatherRepository implements WeatherRepository {
         lat: location.latitude,
         lon: location.longitude,
         units: units,
+        languageCode: languageCode,
       );
       final DateTime storedAt = _now();
       final OpenWeatherCacheEntry entry = OpenWeatherCacheEntry(
@@ -74,6 +76,7 @@ class OpenWeatherRepository implements WeatherRepository {
         final WeatherReport? fallback = await _fetchForecastReport(
           location,
           units,
+          languageCode: languageCode,
         );
         if (fallback != null) {
           return fallback;
@@ -163,8 +166,9 @@ class OpenWeatherRepository implements WeatherRepository {
 
   Future<WeatherReport?> _fetchForecastReport(
     WeatherLocation location,
-    Units units,
-  ) async {
+    Units units, {
+    String? languageCode,
+  }) async {
     OpenWeatherCurrentResponse? current;
     OpenWeatherForecastResponse? forecast;
 
@@ -173,6 +177,7 @@ class OpenWeatherRepository implements WeatherRepository {
         lat: location.latitude,
         lon: location.longitude,
         units: units,
+        languageCode: languageCode,
       );
     } catch (_) {}
 
@@ -181,6 +186,7 @@ class OpenWeatherRepository implements WeatherRepository {
         lat: location.latitude,
         lon: location.longitude,
         units: units,
+        languageCode: languageCode,
       );
     } catch (_) {}
 
