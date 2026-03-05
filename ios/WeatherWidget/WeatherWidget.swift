@@ -38,23 +38,26 @@ struct WeatherProvider: TimelineProvider {
 
 struct WeatherWidgetEntryView : View {
     var entry: WeatherProvider.Entry
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(entry.location)
                 .font(.system(size: 12, weight: .bold, design: .monospaced))
-                .foregroundColor(.gray)
+                .foregroundColor(colorScheme == .dark ? .gray : .gray.opacity(0.7))
                 .lineLimit(1)
-            
+
             Text(entry.temperature)
                 .font(.system(size: 32, weight: .black, design: .monospaced))
-                .foregroundColor(.white)
-            
+                .foregroundColor(colorScheme == .dark ? .white : .onSurface)
+
             Spacer()
-            
+
             Text(entry.description)
                 .font(.system(size: 11, weight: .medium, design: .monospaced))
-                .foregroundColor(.blue.opacity(0.8))
+                .foregroundColor(colorScheme == .dark ?
+                    Color.blue.opacity(0.8) :
+                    Color.blue.opacity(0.6))
                 .lineLimit(2)
         }
         .padding()
@@ -67,13 +70,8 @@ struct WeatherWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: WeatherProvider()) { entry in
-            if #available(iOS 17.0, *) {
-                WeatherWidgetEntryView(entry: entry)
-                    .containerBackground(Color(red: 26/255, green: 28/255, blue: 30/255), for: .widget)
-            } else {
-                WeatherWidgetEntryView(entry: entry)
-                    .background(Color(red: 26/255, green: 28/255, blue: 30/255))
-            }
+            WeatherWidgetEntryView(entry: entry)
+                .containerBackground(.fill(.secondary), for: .widget)
         }
         .configurationDisplayName("Pixel Weather")
         .description("Quick view of the current weather.")

@@ -3,7 +3,6 @@
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1A1C1E"
     android:padding="12dp">
 
     <LinearLayout
@@ -17,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Location"
-            android:textColor="#FFFFFF"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -26,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="--°"
-            android:textColor="#FFFFFF"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="32sp"
             android:textStyle="bold"
             android:layout_marginTop="4dp" />
@@ -36,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Condition"
-            android:textColor="#A0A0A0"
+            android:textColor="?android:attr/textColorSecondary"
             android:textSize="12sp"
             android:layout_marginTop="2dp" />
 
@@ -45,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Updated"
-            android:textColor="#606060"
+            android:textColor="?android:attr/textColorTertiary"
             android:textSize="10sp"
             android:layout_marginTop="8dp" />
     </LinearLayout>
