@@ -18,7 +18,25 @@ class WeatherWidget : AppWidgetProvider() {
                 setTextViewText(R.id.widget_location, widgetData.getString("location_name", "Unknown"))
                 setTextViewText(R.id.widget_temperature, widgetData.getString("temperature", "--°"))
                 setTextViewText(R.id.widget_condition, widgetData.getString("condition_description", ""))
-                setTextViewText(R.id.widget_updated, "Updated: ${widgetData.getString("last_updated", "--:--")}")
+                
+                // Map condition to icon
+                val condition = widgetData.getString("condition_type", "unknown")?.lowercase() ?: "unknown"
+                val iconRes = when (condition) {
+                    "clear" -> R.drawable.ic_sunny
+                    "clouds" -> R.drawable.ic_cloudy
+                    "rain" -> R.drawable.ic_rainy
+                    "thunder" -> R.drawable.ic_thunder
+                    "snow" -> R.drawable.ic_cloudy
+                    "fog" -> R.drawable.ic_cloudy
+                    else -> 0
+                }
+                
+                if (iconRes != 0) {
+                    setImageViewResource(R.id.widget_condition_icon, iconRes)
+                    setViewVisibility(R.id.widget_condition_icon, android.view.View.VISIBLE)
+                } else {
+                    setViewVisibility(R.id.widget_condition_icon, android.view.View.GONE)
+                }
             }
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
