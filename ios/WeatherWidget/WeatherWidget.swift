@@ -44,12 +44,40 @@ struct WeatherWidgetEntryView : View {
     var entry: WeatherProvider.Entry
     @Environment(\.colorScheme) private var colorScheme
 
+    private var conditionIcon: (name: String, color: Color) {
+        switch entry.condition.lowercased() {
+        case "clear":
+            return ("sun.max.fill", .orange)
+        case "clouds":
+            return ("cloud.fill", .gray)
+        case "rain":
+            return ("cloud.rain.fill", .blue)
+        case "thunder":
+            return ("cloud.bolt.fill", .yellow)
+        case "snow":
+            return ("snow", .cyan)
+        case "fog":
+            return ("cloud.fog.fill", .gray)
+        default:
+            return ("questionmark.circle.fill", .brandTeal)
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(entry.location)
-                .font(.system(size: 12, weight: .bold, design: .monospaced))
-                .foregroundColor(colorScheme == .dark ? .gray : Color(white: 0.4))
-                .lineLimit(1)
+            HStack {
+                Text(entry.location)
+                    .font(.system(size: 12, weight: .bold, design: .monospaced))
+                    .foregroundColor(colorScheme == .dark ? .gray : Color(white: 0.4))
+                    .lineLimit(1)
+                
+                Spacer()
+                
+                Image(systemName: conditionIcon.name)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundColor(conditionIcon.color)
+                    .font(.system(size: 14))
+            }
 
             Text(entry.temperature)
                 .font(.system(size: 32, weight: .black, design: .monospaced))
