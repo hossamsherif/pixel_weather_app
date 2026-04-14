@@ -17,6 +17,7 @@ class _UnitsController extends UnitsController {
   @override
   Units build() => initial;
 
+  @override
   void setUnits(Units units) => state = units;
 }
 
