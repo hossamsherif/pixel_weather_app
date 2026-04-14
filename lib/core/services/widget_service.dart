@@ -7,7 +7,7 @@ class WidgetService {
   static const String _androidWidgetName = 'WeatherWidget';
   static const String _iosWidgetName = 'WeatherWidget';
 
-  static Future<void> updateWidget(WeatherReport report) async {
+  Future<void> updateWidget(WeatherReport report) async {
     final current = report.current;
     final location = report.location;
 

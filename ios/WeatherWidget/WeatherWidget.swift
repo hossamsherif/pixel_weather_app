@@ -40,6 +40,19 @@ extension Color {
     static let brandTeal = Color(red: 15/255, green: 118/255, blue: 110/255) // #0F766E
 }
 
+extension View {
+    @ViewBuilder
+    func widgetBackground(colorScheme: ColorScheme) -> some View {
+        if #available(iOS 17.0, *) {
+            containerBackground(colorScheme == .dark ? Color.black.gradient : Color.white.gradient, for: .widget)
+        } else if #available(iOS 16.0, *) {
+            background(colorScheme == .dark ? Color.black.gradient : Color.white.gradient)
+        } else {
+            background(colorScheme == .dark ? Color.black : Color.white)
+        }
+    }
+}
+
 struct WeatherWidgetEntryView : View {
     var entry: WeatherProvider.Entry
     @Environment(\.colorScheme) private var colorScheme
@@ -92,7 +105,7 @@ struct WeatherWidgetEntryView : View {
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .containerBackground(colorScheme == .dark ? Color.black.gradient : Color.white.gradient, for: .widget)
+        .widgetBackground(colorScheme: colorScheme)
     }
 }
 
@@ -109,6 +122,7 @@ struct WeatherWidget: Widget {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview(as: .systemSmall) {
     WeatherWidget()
 } timeline: {

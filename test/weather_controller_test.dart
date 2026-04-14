@@ -2,12 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:pixel_weather_app/core/services/widget_service.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
 import 'package:pixel_weather_app/domain/repositories/weather_repository.dart';
-import 'package:pixel_weather_app/presentation/state/providers.dart';
 import 'package:pixel_weather_app/presentation/state/location_service.dart';
+import 'package:pixel_weather_app/presentation/state/providers.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +17,8 @@ class MockWeatherRepository extends Mock implements WeatherRepository {}
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 class MockLocationService extends Mock implements LocationService {}
+
+class MockWidgetService extends Mock implements WidgetService {}
 
 class TestLocaleController extends LocaleController {
   final Locale? initialLocale;
@@ -28,6 +31,7 @@ void main() {
   late MockWeatherRepository repository;
   late MockSharedPreferences sharedPrefs;
   late MockLocationService locationService;
+  late MockWidgetService widgetService;
 
   setUpAll(() {
     registerFallbackValue(
@@ -40,17 +44,31 @@ void main() {
       ),
     );
     registerFallbackValue(Units.metric);
+    registerFallbackValue(_fakeReport(
+      const WeatherLocation(
+        latitude: 0,
+        longitude: 0,
+        name: '',
+        country: '',
+        source: LocationSource.gps,
+      ),
+    ));
   });
 
   setUp(() {
     repository = MockWeatherRepository();
     sharedPrefs = MockSharedPreferences();
     locationService = MockLocationService();
+    widgetService = MockWidgetService();
 
     when(() => sharedPrefs.getString(any())).thenReturn(null);
     when(
       () => sharedPrefs.setString(any(), any()),
     ).thenAnswer((_) async => true);
+
+    when(
+      () => widgetService.updateWidget(any()),
+    ).thenAnswer((_) async {});
   });
 
   ProviderContainer createContainer({Locale? initialLocale}) {
@@ -59,6 +77,7 @@ void main() {
         weatherRepositoryProvider.overrideWithValue(repository),
         sharedPreferencesProvider.overrideWithValue(sharedPrefs),
         locationServiceProvider.overrideWithValue(locationService),
+        widgetServiceProvider.overrideWithValue(widgetService),
         if (initialLocale != null)
           localeProvider.overrideWith(
             () => TestLocaleController(initialLocale: initialLocale),
@@ -113,6 +132,8 @@ void main() {
           languageCode: 'ar',
         ),
       ).called(1);
+
+      verify(() => widgetService.updateWidget(any())).called(1);
     },
   );
 
@@ -151,6 +172,8 @@ void main() {
         languageCode: 'ar',
       ),
     ).called(1);
+
+    verify(() => widgetService.updateWidget(any())).called(greaterThanOrEqualTo(2));
   });
 }
 
