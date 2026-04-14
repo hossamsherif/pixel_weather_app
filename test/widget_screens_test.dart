@@ -60,15 +60,12 @@ void main() {
   testWidgets('NowScreen shows empty state when no report', (tester) async {
     _stubReport = null;
     await tester.pumpWidget(
-      _wrap(
-        const NowScreen(),
-        [
-          weatherControllerProvider.overrideWith(_TestWeatherController.new),
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-        ],
-      ),
+      _wrap(const NowScreen(), [
+        weatherControllerProvider.overrideWith(_TestWeatherController.new),
+        favoritesControllerProvider.overrideWith(
+          () => _TestFavoritesController(const []),
+        ),
+      ]),
     );
 
     await tester.pumpAndSettle();
@@ -77,19 +74,18 @@ void main() {
     expect(find.text('Use my location'), findsOneWidget);
   });
 
-  testWidgets('NowScreen shows summary card when report exists', (tester) async {
+  testWidgets('NowScreen shows summary card when report exists', (
+    tester,
+  ) async {
     _stubReport = _report();
     await tester.pumpWidget(
-      _wrap(
-        const NowScreen(),
-        [
-          weatherControllerProvider.overrideWith(_TestWeatherController.new),
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-          unitsProvider.overrideWith(() => _TestUnitsController(Units.metric)),
-        ],
-      ),
+      _wrap(const NowScreen(), [
+        weatherControllerProvider.overrideWith(_TestWeatherController.new),
+        favoritesControllerProvider.overrideWith(
+          () => _TestFavoritesController(const []),
+        ),
+        unitsProvider.overrideWith(() => _TestUnitsController(Units.metric)),
+      ]),
     );
 
     await tester.pumpAndSettle();
@@ -125,16 +121,13 @@ void main() {
     );
 
     await tester.pumpWidget(
-      _wrap(
-        const ForecastScreen(),
-        [
-          weatherControllerProvider.overrideWith(_TestWeatherController.new),
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-          unitsProvider.overrideWith(() => _TestUnitsController(Units.metric)),
-        ],
-      ),
+      _wrap(const ForecastScreen(), [
+        weatherControllerProvider.overrideWith(_TestWeatherController.new),
+        favoritesControllerProvider.overrideWith(
+          () => _TestFavoritesController(const []),
+        ),
+        unitsProvider.overrideWith(() => _TestUnitsController(Units.metric)),
+      ]),
     );
 
     await tester.pumpAndSettle();
@@ -146,15 +139,12 @@ void main() {
   testWidgets('FavoritesScreen shows empty state', (tester) async {
     _stubReport = null;
     await tester.pumpWidget(
-      _wrap(
-        const FavoritesScreen(),
-        [
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-          weatherControllerProvider.overrideWith(_TestWeatherController.new),
-        ],
-      ),
+      _wrap(const FavoritesScreen(), [
+        favoritesControllerProvider.overrideWith(
+          () => _TestFavoritesController(const []),
+        ),
+        weatherControllerProvider.overrideWith(_TestWeatherController.new),
+      ]),
     );
 
     await tester.pumpAndSettle();
@@ -164,17 +154,12 @@ void main() {
 
   testWidgets('SearchScreen shows initial empty state', (tester) async {
     await tester.pumpWidget(
-      _wrap(
-        const SearchScreen(),
-        [
-          searchResultsProvider.overrideWith(
-            (ref) async => <WeatherLocation>[],
-          ),
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-        ],
-      ),
+      _wrap(const SearchScreen(), [
+        searchResultsProvider.overrideWith((ref) async => <WeatherLocation>[]),
+        favoritesControllerProvider.overrideWith(
+          () => _TestFavoritesController(const []),
+        ),
+      ]),
     );
 
     await tester.pumpAndSettle();

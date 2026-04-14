@@ -47,7 +47,9 @@ void main() {
     locationService = MockLocationService();
     widgetService = MockWidgetService();
 
-    when(() => sharedPrefs.setString(any(), any())).thenAnswer((_) async => true);
+    when(
+      () => sharedPrefs.setString(any(), any()),
+    ).thenAnswer((_) async => true);
     when(() => widgetService.updateWidget(any())).thenAnswer((_) async {});
   });
 
@@ -68,7 +70,9 @@ void main() {
 
   test('build returns null when no location access', () async {
     when(() => sharedPrefs.getString(any())).thenReturn(null);
-    when(() => locationService.canAccessLocation()).thenAnswer((_) async => false);
+    when(
+      () => locationService.canAccessLocation(),
+    ).thenAnswer((_) async => false);
 
     final container = createContainer();
 
@@ -87,9 +91,9 @@ void main() {
       country: 'TS',
       source: LocationSource.search,
     );
-    when(() => sharedPrefs.getString(any())).thenReturn(
-      jsonEncode(storedLocation.toJson()),
-    );
+    when(
+      () => sharedPrefs.getString(any()),
+    ).thenReturn(jsonEncode(storedLocation.toJson()));
 
     when(
       () => repository.getWeather(
@@ -110,7 +114,9 @@ void main() {
 
   test('loadForCurrentLocation resolves location and saves', () async {
     when(() => sharedPrefs.getString(any())).thenReturn(null);
-    when(() => locationService.getCurrentPosition()).thenAnswer((_) async => _FakePosition());
+    when(
+      () => locationService.getCurrentPosition(),
+    ).thenAnswer((_) async => _FakePosition());
     when(
       () => repository.resolveLocation(
         latitude: any(named: 'latitude'),

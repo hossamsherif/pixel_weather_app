@@ -41,8 +41,9 @@ class _WeatherController extends WeatherController {
 }
 
 void main() {
-  testWidgets('AppShell switches units and locale and navigates',
-      (tester) async {
+  testWidgets('AppShell switches units and locale and navigates', (
+    tester,
+  ) async {
     late _WeatherController weatherController;
 
     final router = GoRouter(
@@ -54,9 +55,8 @@ void main() {
           builder: (context, state) => const Text('Search'),
         ),
         StatefulShellRoute.indexedStack(
-          builder: (context, state, navigationShell) => AppShell(
-            navigationShell: navigationShell,
-          ),
+          builder: (context, state, navigationShell) =>
+              AppShell(navigationShell: navigationShell),
           branches: <StatefulShellBranch>[
             StatefulShellBranch(
               routes: <RouteBase>[

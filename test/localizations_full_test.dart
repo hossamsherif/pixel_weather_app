@@ -115,10 +115,7 @@ void main() {
       'ابحث عن مدينة أو فعل الموقع لرؤية الظروف الحالية.',
     );
     expect(ar.emptyForecastTitle, 'لا توجد توقعات بعد');
-    expect(
-      ar.emptyForecastBody,
-      'اختر موقعاً لعرض التوقعات الساعية واليومية.',
-    );
+    expect(ar.emptyForecastBody, 'اختر موقعاً لعرض التوقعات الساعية واليومية.');
     expect(ar.emptyFavoritesTitle, 'لا توجد مفضلات بعد');
     expect(ar.emptyFavoritesBody, 'احفظ المواقع للوصول إليها بسرعة.');
     expect(ar.offlineBadge, 'غير متصل');

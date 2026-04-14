@@ -45,9 +45,7 @@ void main() {
           weatherControllerProvider.overrideWith(
             () => _WeatherController(
               AsyncValue.error(
-                LocationServiceException(
-                  LocationServiceError.servicesDisabled,
-                ),
+                LocationServiceException(LocationServiceError.servicesDisabled),
                 StackTrace.current,
               ),
             ),

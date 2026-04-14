@@ -7,8 +7,9 @@ import 'package:pixel_weather_app/l10n/app_localizations.dart';
 import 'package:pixel_weather_app/presentation/widgets/weather_summary_card.dart';
 
 void main() {
-  testWidgets('WeatherSummaryCard shows offline badge and favorite toggle',
-      (tester) async {
+  testWidgets('WeatherSummaryCard shows offline badge and favorite toggle', (
+    tester,
+  ) async {
     var toggled = false;
     final report = _report(dataSource: WeatherDataSource.cache);
 
@@ -96,7 +97,8 @@ WeatherReport _report({
       source: LocationSource.search,
     ),
     updatedAt: DateTime(2024, 1, 1, 12, 0),
-    current: current ??
+    current:
+        current ??
         CurrentWeather(
           observedAt: DateTime(2024, 1, 1, 11),
           temperature: 20.4,
