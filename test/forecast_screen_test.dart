@@ -49,7 +49,9 @@ void main() {
       _wrap(
         const ForecastScreen(),
         overrides: [
-          weatherControllerProvider.overrideWith(() => _WeatherController(report)),
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(report),
+          ),
           favoritesControllerProvider.overrideWith(
             () => _FavoritesController(const []),
           ),
@@ -65,13 +67,19 @@ void main() {
 
   testWidgets('ForecastScreen toggles favorite state', (tester) async {
     final location = _location();
-    final report = _report(location: location, hourly: _hourly(), daily: _daily());
+    final report = _report(
+      location: location,
+      hourly: _hourly(),
+      daily: _daily(),
+    );
 
     await tester.pumpWidget(
       _wrap(
         const ForecastScreen(),
         overrides: [
-          weatherControllerProvider.overrideWith(() => _WeatherController(report)),
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(report),
+          ),
           favoritesControllerProvider.overrideWith(
             () => _FavoritesController(const []),
           ),

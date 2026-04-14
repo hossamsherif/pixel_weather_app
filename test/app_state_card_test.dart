@@ -33,10 +33,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
-          body: AppStateCard(
-            title: 'Empty',
-            message: 'No actions',
-          ),
+          body: AppStateCard(title: 'Empty', message: 'No actions'),
         ),
       ),
     );

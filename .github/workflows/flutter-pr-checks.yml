@@ -1,0 +1,73 @@
+name: Flutter PR Checks
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+jobs:
+  flutter-test:
+    name: Analyze and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show Flutter version
+        run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Run static analysis
+        run: flutter analyze
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Enforce minimum coverage (80%)
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ ! -f coverage/lcov.info ]]; then
+            echo "coverage/lcov.info not found"
+            exit 1
+          fi
+
+          LF=$(grep -h '^LF:' coverage/lcov.info | awk -F: '{sum += $2} END {print sum+0}')
+          LH=$(grep -h '^LH:' coverage/lcov.info | awk -F: '{sum += $2} END {print sum+0}')
+
+          if [[ "$LF" -eq 0 ]]; then
+            echo "No executable lines found in coverage report"
+            exit 1
+          fi
+
+          COVERAGE=$(awk -v lh="$LH" -v lf="$LF" 'BEGIN { printf "%.2f", (lh/lf)*100 }')
+
+          echo "Lines hit: $LH"
+          echo "Lines found: $LF"
+          echo "Coverage: ${COVERAGE}%"
+
+          awk -v coverage="$COVERAGE" 'BEGIN { exit !(coverage >= 80.0) }'
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: flutter-coverage
+          path: coverage/lcov.info
+          if-no-files-found: ignore

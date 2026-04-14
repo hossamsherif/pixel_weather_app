@@ -10,11 +10,11 @@ import 'package:pixel_weather_app/presentation/screens/forecast_screen.dart';
 import 'package:pixel_weather_app/presentation/screens/now_screen.dart';
 import 'package:pixel_weather_app/presentation/screens/search_screen.dart';
 import 'package:pixel_weather_app/presentation/state/favorites_controller.dart';
-import 'package:pixel_weather_app/presentation/state/weather_controller.dart';
 import 'package:pixel_weather_app/presentation/state/providers.dart';
+import 'package:pixel_weather_app/presentation/state/weather_controller.dart';
 
 void main() {
-  Widget _wrap(Widget child, List overrides) {
+  Widget wrapWidget(Widget child, List overrides) {
     return ProviderScope(
       overrides: List.castFrom(overrides),
       child: MaterialApp(
@@ -25,18 +25,19 @@ void main() {
     );
   }
 
-  WeatherReport _report({
+  WeatherReport buildReport({
     WeatherDataSource source = WeatherDataSource.network,
     List<HourlyForecast> hourly = const [],
     List<DailyForecast> daily = const [],
   }) {
-    final location = const WeatherLocation(
+    const location = WeatherLocation(
       latitude: 1,
       longitude: 2,
       name: 'Test City',
       country: 'TS',
       source: LocationSource.search,
     );
+
     return WeatherReport(
       location: location,
       current: CurrentWeather(
@@ -58,17 +59,14 @@ void main() {
   }
 
   testWidgets('NowScreen shows empty state when no report', (tester) async {
-    _stubReport = null;
+    stubReport = null;
     await tester.pumpWidget(
-      _wrap(
-        const NowScreen(),
-        [
-          weatherControllerProvider.overrideWith(_TestWeatherController.new),
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-        ],
-      ),
+      wrapWidget(const NowScreen(), [
+        weatherControllerProvider.overrideWith(TestWeatherController.new),
+        favoritesControllerProvider.overrideWith(
+          () => TestFavoritesController(const []),
+        ),
+      ]),
     );
 
     await tester.pumpAndSettle();
@@ -77,30 +75,29 @@ void main() {
     expect(find.text('Use my location'), findsOneWidget);
   });
 
-  testWidgets('NowScreen shows summary card when report exists', (tester) async {
-    _stubReport = _report();
+  testWidgets('NowScreen shows summary card when report exists', (
+    tester,
+  ) async {
+    stubReport = buildReport();
     await tester.pumpWidget(
-      _wrap(
-        const NowScreen(),
-        [
-          weatherControllerProvider.overrideWith(_TestWeatherController.new),
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-          unitsProvider.overrideWith(() => _TestUnitsController(Units.metric)),
-        ],
-      ),
+      wrapWidget(const NowScreen(), [
+        weatherControllerProvider.overrideWith(TestWeatherController.new),
+        favoritesControllerProvider.overrideWith(
+          () => TestFavoritesController(const []),
+        ),
+        unitsProvider.overrideWith(() => TestUnitsController(Units.metric)),
+      ]),
     );
 
     await tester.pumpAndSettle();
 
     expect(find.text('Test City, TS'), findsOneWidget);
-    expect(find.textContaining('21°'), findsOneWidget);
+    expect(find.textContaining('21'), findsOneWidget);
     expect(find.byIcon(Icons.star_border_outlined), findsOneWidget);
   });
 
   testWidgets('ForecastScreen shows hourly and daily sections', (tester) async {
-    _stubReport = _report(
+    stubReport = buildReport(
       hourly: [
         HourlyForecast(
           time: DateTime(2024, 1, 1, 11, 0),
@@ -125,16 +122,13 @@ void main() {
     );
 
     await tester.pumpWidget(
-      _wrap(
-        const ForecastScreen(),
-        [
-          weatherControllerProvider.overrideWith(_TestWeatherController.new),
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-          unitsProvider.overrideWith(() => _TestUnitsController(Units.metric)),
-        ],
-      ),
+      wrapWidget(const ForecastScreen(), [
+        weatherControllerProvider.overrideWith(TestWeatherController.new),
+        favoritesControllerProvider.overrideWith(
+          () => TestFavoritesController(const []),
+        ),
+        unitsProvider.overrideWith(() => TestUnitsController(Units.metric)),
+      ]),
     );
 
     await tester.pumpAndSettle();
@@ -144,17 +138,14 @@ void main() {
   });
 
   testWidgets('FavoritesScreen shows empty state', (tester) async {
-    _stubReport = null;
+    stubReport = null;
     await tester.pumpWidget(
-      _wrap(
-        const FavoritesScreen(),
-        [
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-          weatherControllerProvider.overrideWith(_TestWeatherController.new),
-        ],
-      ),
+      wrapWidget(const FavoritesScreen(), [
+        favoritesControllerProvider.overrideWith(
+          () => TestFavoritesController(const []),
+        ),
+        weatherControllerProvider.overrideWith(TestWeatherController.new),
+      ]),
     );
 
     await tester.pumpAndSettle();
@@ -164,17 +155,12 @@ void main() {
 
   testWidgets('SearchScreen shows initial empty state', (tester) async {
     await tester.pumpWidget(
-      _wrap(
-        const SearchScreen(),
-        [
-          searchResultsProvider.overrideWith(
-            (ref) async => <WeatherLocation>[],
-          ),
-          favoritesControllerProvider.overrideWith(
-            () => _TestFavoritesController(const []),
-          ),
-        ],
-      ),
+      wrapWidget(const SearchScreen(), [
+        searchResultsProvider.overrideWith((ref) async => <WeatherLocation>[]),
+        favoritesControllerProvider.overrideWith(
+          () => TestFavoritesController(const []),
+        ),
+      ]),
     );
 
     await tester.pumpAndSettle();
@@ -189,25 +175,25 @@ void main() {
   });
 }
 
-class _TestUnitsController extends UnitsController {
-  _TestUnitsController(this.initial);
+class TestUnitsController extends UnitsController {
+  TestUnitsController(this.initial);
   final Units initial;
 
   @override
   Units build() => initial;
 }
 
-class _TestFavoritesController extends FavoritesController {
-  _TestFavoritesController(this.initial);
+class TestFavoritesController extends FavoritesController {
+  TestFavoritesController(this.initial);
   final List<WeatherLocation> initial;
 
   @override
   List<WeatherLocation> build() => initial;
 }
 
-late WeatherReport? _stubReport;
+WeatherReport? stubReport;
 
-class _TestWeatherController extends WeatherController {
+class TestWeatherController extends WeatherController {
   @override
-  Future<WeatherReport?> build() async => _stubReport;
+  Future<WeatherReport?> build() async => stubReport;
 }

@@ -5,7 +5,6 @@ import 'package:pixel_weather_app/data/open_weather/open_weather_models.dart';
 import 'package:pixel_weather_app/data/open_weather/open_weather_repository.dart';
 import 'package:pixel_weather_app/data/cache/open_weather_cache_entry.dart';
 import 'package:pixel_weather_app/data/cache/weather_cache.dart';
-import 'package:pixel_weather_app/data/open_weather/open_weather_mapper.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';

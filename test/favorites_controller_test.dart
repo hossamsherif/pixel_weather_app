@@ -36,9 +36,7 @@ void main() {
   ProviderContainer createContainer(List<WeatherLocation> initial) {
     when(() => store.read()).thenReturn(initial);
     final container = ProviderContainer(
-      overrides: [
-        favoritesStoreProvider.overrideWithValue(store),
-      ],
+      overrides: [favoritesStoreProvider.overrideWithValue(store)],
     );
     addTearDown(container.dispose);
     return container;

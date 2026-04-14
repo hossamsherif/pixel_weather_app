@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pixel_weather_app/core/services/widget_service.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
@@ -44,15 +43,17 @@ void main() {
       ),
     );
     registerFallbackValue(Units.metric);
-    registerFallbackValue(_fakeReport(
-      const WeatherLocation(
-        latitude: 0,
-        longitude: 0,
-        name: '',
-        country: '',
-        source: LocationSource.gps,
+    registerFallbackValue(
+      _fakeReport(
+        const WeatherLocation(
+          latitude: 0,
+          longitude: 0,
+          name: '',
+          country: '',
+          source: LocationSource.gps,
+        ),
       ),
-    ));
+    );
   });
 
   setUp(() {
@@ -66,9 +67,7 @@ void main() {
       () => sharedPrefs.setString(any(), any()),
     ).thenAnswer((_) async => true);
 
-    when(
-      () => widgetService.updateWidget(any()),
-    ).thenAnswer((_) async {});
+    when(() => widgetService.updateWidget(any())).thenAnswer((_) async {});
   });
 
   ProviderContainer createContainer({Locale? initialLocale}) {
@@ -173,7 +172,9 @@ void main() {
       ),
     ).called(1);
 
-    verify(() => widgetService.updateWidget(any())).called(greaterThanOrEqualTo(2));
+    verify(
+      () => widgetService.updateWidget(any()),
+    ).called(greaterThanOrEqualTo(2));
   });
 }
 

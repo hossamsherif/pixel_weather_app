@@ -15,8 +15,9 @@ export '../../core/services/widget_service.dart';
 import 'location_service.dart';
 
 /// Provider for WidgetService - can be overridden in tests
-final Provider<WidgetService> widgetServiceProvider =
-    Provider<WidgetService>((ref) => WidgetService());
+final Provider<WidgetService> widgetServiceProvider = Provider<WidgetService>(
+  (ref) => WidgetService(),
+);
 
 final Provider<SharedPreferences> sharedPreferencesProvider =
     Provider<SharedPreferences>((ref) {

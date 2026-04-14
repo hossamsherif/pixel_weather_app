@@ -48,12 +48,14 @@ void main() {
       _wrap(
         const FavoritesScreen(),
         overrides: [
-          favoritesControllerProvider
-              .overrideWith(() => _FavoritesController([favorite])),
-          weatherControllerProvider.overrideWith(() => _WeatherController(report)),
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController([favorite]),
+          ),
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(report),
+          ),
           unitsProvider.overrideWith(_UnitsController.new),
-          favoriteWeatherProvider(favorite)
-              .overrideWith((ref) async => report),
+          favoriteWeatherProvider(favorite).overrideWith((ref) async => report),
         ],
       ),
     );
@@ -72,12 +74,14 @@ void main() {
       _wrap(
         const FavoritesScreen(),
         overrides: [
-          favoritesControllerProvider
-              .overrideWith(() => _FavoritesController([favorite])),
-          weatherControllerProvider.overrideWith(() => _WeatherController(null)),
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController([favorite]),
+          ),
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(null),
+          ),
           unitsProvider.overrideWith(_UnitsController.new),
-          favoriteWeatherProvider(favorite)
-              .overrideWith((ref) async => null),
+          favoriteWeatherProvider(favorite).overrideWith((ref) async => null),
         ],
       ),
     );

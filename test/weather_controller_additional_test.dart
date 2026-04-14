@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:pixel_weather_app/core/services/widget_service.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
@@ -47,7 +46,9 @@ void main() {
     locationService = MockLocationService();
     widgetService = MockWidgetService();
 
-    when(() => sharedPrefs.setString(any(), any())).thenAnswer((_) async => true);
+    when(
+      () => sharedPrefs.setString(any(), any()),
+    ).thenAnswer((_) async => true);
     when(() => widgetService.updateWidget(any())).thenAnswer((_) async {});
   });
 
@@ -68,7 +69,9 @@ void main() {
 
   test('build returns null when no location access', () async {
     when(() => sharedPrefs.getString(any())).thenReturn(null);
-    when(() => locationService.canAccessLocation()).thenAnswer((_) async => false);
+    when(
+      () => locationService.canAccessLocation(),
+    ).thenAnswer((_) async => false);
 
     final container = createContainer();
 
@@ -87,9 +90,9 @@ void main() {
       country: 'TS',
       source: LocationSource.search,
     );
-    when(() => sharedPrefs.getString(any())).thenReturn(
-      jsonEncode(storedLocation.toJson()),
-    );
+    when(
+      () => sharedPrefs.getString(any()),
+    ).thenReturn(jsonEncode(storedLocation.toJson()));
 
     when(
       () => repository.getWeather(
@@ -110,7 +113,9 @@ void main() {
 
   test('loadForCurrentLocation resolves location and saves', () async {
     when(() => sharedPrefs.getString(any())).thenReturn(null);
-    when(() => locationService.getCurrentPosition()).thenAnswer((_) async => _FakePosition());
+    when(
+      () => locationService.getCurrentPosition(),
+    ).thenAnswer((_) async => _FakePosition());
     when(
       () => repository.resolveLocation(
         latitude: any(named: 'latitude'),

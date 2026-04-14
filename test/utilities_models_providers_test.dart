@@ -32,8 +32,14 @@ void main() {
 
   group('Localizations', () {
     test('lookupAppLocalizations supports en and ar', () {
-      expect(lookupAppLocalizations(const Locale('en')), isA<AppLocalizationsEn>());
-      expect(lookupAppLocalizations(const Locale('ar')), isA<AppLocalizationsAr>());
+      expect(
+        lookupAppLocalizations(const Locale('en')),
+        isA<AppLocalizationsEn>(),
+      );
+      expect(
+        lookupAppLocalizations(const Locale('ar')),
+        isA<AppLocalizationsAr>(),
+      );
     });
 
     test('delegate support and reload behavior', () {
@@ -190,7 +196,12 @@ void main() {
           'humidity': 60,
           'wind_speed': 4,
           'weather': [
-            {'id': 801, 'main': 'Clouds', 'description': 'few clouds', 'icon': '02d'},
+            {
+              'id': 801,
+              'main': 'Clouds',
+              'description': 'few clouds',
+              'icon': '02d',
+            },
           ],
         },
         'hourly': [
@@ -198,7 +209,12 @@ void main() {
             'dt': 2,
             'temp': 21,
             'weather': [
-              {'id': 500, 'main': 'Rain', 'description': 'light rain', 'icon': '10d'},
+              {
+                'id': 500,
+                'main': 'Rain',
+                'description': 'light rain',
+                'icon': '10d',
+              },
             ],
             'pop': 0.2,
           },
