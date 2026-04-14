@@ -11,7 +11,7 @@ import 'package:pixel_weather_app/l10n/app_localizations_en.dart';
 import 'package:pixel_weather_app/presentation/state/app_providers.dart';
 
 void main() {
-  group('constants and small utility coverage', () {
+  group('Constants and utilities', () {
     test('AppRoutes constants are stable', () {
       expect(AppRoutes.forecast, 'forecast');
       expect(AppRoutes.favorites, 'favorites');
@@ -30,7 +30,7 @@ void main() {
     });
   });
 
-  group('localizations coverage', () {
+  group('Localizations', () {
     test('lookupAppLocalizations supports en and ar', () {
       expect(lookupAppLocalizations(const Locale('en')), isA<AppLocalizationsEn>());
       expect(lookupAppLocalizations(const Locale('ar')), isA<AppLocalizationsAr>());
@@ -67,7 +67,7 @@ void main() {
     });
   });
 
-  group('provider controllers coverage', () {
+  group('Provider controllers', () {
     test('UnitsController setUnits updates state', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
@@ -100,7 +100,7 @@ void main() {
     });
   });
 
-  group('open weather model serialization coverage', () {
+  group('OpenWeather models serialization', () {
     test('OpenWeatherCoord defaults and toJson', () {
       final coord = OpenWeatherCoord.fromJson(const {});
       expect(coord.lat, 0);

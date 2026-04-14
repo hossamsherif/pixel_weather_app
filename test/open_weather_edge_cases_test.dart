@@ -28,7 +28,7 @@ void main() {
     registerFallbackValue(Units.metric);
   });
 
-  group('OpenWeatherClient error paths', () {
+  group('OpenWeatherClient error handling', () {
     late _MockHttpClient httpClient;
     late OpenWeatherClient client;
 
@@ -91,7 +91,7 @@ void main() {
     });
   });
 
-  group('OpenWeatherRepository additional branches', () {
+  group('OpenWeatherRepository API fallbacks and cache', () {
     late _MockOpenWeatherClient client;
     late _MockWeatherCache cache;
     late OpenWeatherRepository repository;
