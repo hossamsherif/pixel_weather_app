@@ -75,7 +75,9 @@ void main() {
     expect(find.text('Use my location'), findsOneWidget);
   });
 
-  testWidgets('NowScreen shows summary card when report exists', (tester) async {
+  testWidgets('NowScreen shows summary card when report exists', (
+    tester,
+  ) async {
     stubReport = buildReport();
     await tester.pumpWidget(
       wrapWidget(const NowScreen(), [
