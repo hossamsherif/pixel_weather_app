@@ -7,7 +7,6 @@ import '../../domain/models/location.dart';
 import '../../domain/models/units.dart';
 import '../../domain/models/weather.dart';
 import '../../domain/repositories/weather_repository.dart';
-import '../../core/services/widget_service.dart';
 import 'app_providers.dart';
 import 'location_service.dart';
 
@@ -19,6 +18,7 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
     final WeatherRepository repo = ref.watch(weatherRepositoryProvider);
     final Units units = ref.watch(unitsProvider);
     final String? languageCode = ref.watch(localeProvider)?.languageCode;
+    final WidgetService widgetService = ref.read(widgetServiceProvider);
     final WeatherLocation? lastLocation = await _readLastLocation();
 
     if (lastLocation != null) {
@@ -27,7 +27,7 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
         units: units,
         languageCode: languageCode,
       );
-      WidgetService.updateWidget(report);
+      widgetService.updateWidget(report);
       return report;
     }
 
@@ -48,7 +48,7 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
       units: units,
       languageCode: languageCode,
     );
-    WidgetService.updateWidget(report);
+    widgetService.updateWidget(report);
     return report;
   }
 
@@ -59,12 +59,13 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
       final WeatherRepository repo = ref.read(weatherRepositoryProvider);
       final Units units = ref.read(unitsProvider);
       final String? languageCode = ref.read(localeProvider)?.languageCode;
+      final WidgetService widgetService = ref.read(widgetServiceProvider);
       final report = await repo.getWeather(
         location: location,
         units: units,
         languageCode: languageCode,
       );
-      WidgetService.updateWidget(report);
+      widgetService.updateWidget(report);
       return report;
     });
   }
@@ -74,6 +75,7 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
     state = await AsyncValue.guard(() async {
       final WeatherRepository repo = ref.read(weatherRepositoryProvider);
       final LocationService locationService = ref.read(locationServiceProvider);
+      final WidgetService widgetService = ref.read(widgetServiceProvider);
       final position = await locationService.getCurrentPosition();
       final WeatherLocation location = await repo.resolveLocation(
         latitude: position.latitude,
@@ -87,7 +89,7 @@ class WeatherController extends AsyncNotifier<WeatherReport?> {
         units: units,
         languageCode: languageCode,
       );
-      WidgetService.updateWidget(report);
+      widgetService.updateWidget(report);
       return report;
     });
   }

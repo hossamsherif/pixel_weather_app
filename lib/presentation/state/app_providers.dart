@@ -10,7 +10,13 @@ import '../../domain/models/location.dart';
 import '../../domain/models/units.dart';
 import '../../domain/models/weather.dart';
 import '../../domain/repositories/weather_repository.dart';
+import '../../core/services/widget_service.dart';
+export '../../core/services/widget_service.dart';
 import 'location_service.dart';
+
+/// Provider for WidgetService - can be overridden in tests
+final Provider<WidgetService> widgetServiceProvider =
+    Provider<WidgetService>((ref) => WidgetService());
 
 final Provider<SharedPreferences> sharedPreferencesProvider =
     Provider<SharedPreferences>((ref) {
