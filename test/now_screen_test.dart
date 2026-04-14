@@ -99,9 +99,9 @@ void main() {
     when(
       () => mockLocationService.canAccessLocation(),
     ).thenAnswer((_) async => true);
-    when(() => mockLocationService.getCurrentPosition()).thenThrow(
-      LocationServiceException(error),
-    );
+    when(
+      () => mockLocationService.getCurrentPosition(),
+    ).thenThrow(LocationServiceException(error));
   }
 
   /// Sets up mocks so that getWeather throws the given exception.
