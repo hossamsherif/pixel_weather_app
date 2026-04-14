@@ -12,6 +12,8 @@ import SwiftUI
 struct WeatherWidgetBundle: WidgetBundle {
     var body: some Widget {
         WeatherWidget()
-        WeatherWidgetControl()
+        if #available(iOS 18.0, *) {
+            WeatherWidgetControl()
+        }
     }
 }
