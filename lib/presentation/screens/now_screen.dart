@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:pixel_weather_app/data/open_weather/open_weather_exceptions.dart';
-import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
 import 'package:pixel_weather_app/l10n/app_localizations.dart';
-import 'package:pixel_weather_app/presentation/state/favorites_controller.dart';
 import 'package:pixel_weather_app/presentation/state/location_service.dart';
 import 'package:pixel_weather_app/presentation/state/providers.dart';
-import 'package:pixel_weather_app/presentation/state/weather_controller.dart';
 import 'package:pixel_weather_app/presentation/widgets/app_state_card.dart';
 import 'package:pixel_weather_app/presentation/widgets/weather_summary_card.dart';
 

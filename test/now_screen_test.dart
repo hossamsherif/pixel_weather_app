@@ -12,9 +12,6 @@ import 'package:pixel_weather_app/data/open_weather/open_weather_exceptions.dart
 import 'package:pixel_weather_app/presentation/screens/now_screen.dart';
 import 'package:pixel_weather_app/presentation/state/app_providers.dart';
 import 'package:pixel_weather_app/presentation/state/location_service.dart';
-import 'package:pixel_weather_app/presentation/state/controller_providers.dart';
-import 'package:pixel_weather_app/presentation/widgets/app_state_card.dart';
-import 'package:pixel_weather_app/core/services/widget_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockWeatherRepository extends Mock implements WeatherRepository {}
