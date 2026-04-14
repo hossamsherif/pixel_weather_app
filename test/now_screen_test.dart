@@ -18,10 +18,15 @@ import 'package:pixel_weather_app/core/services/widget_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockWeatherRepository extends Mock implements WeatherRepository {}
+
 class MockLocationService extends Mock implements LocationService {}
+
 class MockSharedPreferences extends Mock implements SharedPreferences {}
+
 class MockWidgetService extends Mock implements WidgetService {}
+
 class MockPosition extends Mock implements Position {}
+
 class FakeWeatherReport extends Fake implements WeatherReport {}
 
 void main() {
@@ -31,13 +36,15 @@ void main() {
   late MockWidgetService mockWidgetService;
 
   setUpAll(() {
-    registerFallbackValue(const WeatherLocation(
-      latitude: 0,
-      longitude: 0,
-      name: '',
-      country: '',
-      source: LocationSource.search,
-    ));
+    registerFallbackValue(
+      const WeatherLocation(
+        latitude: 0,
+        longitude: 0,
+        name: '',
+        country: '',
+        source: LocationSource.search,
+      ),
+    );
     registerFallbackValue(Units.metric);
     registerFallbackValue(MockPosition());
     registerFallbackValue(FakeWeatherReport());
@@ -51,8 +58,12 @@ void main() {
 
     when(() => mockSharedPreferences.getStringList(any())).thenReturn(null);
     when(() => mockSharedPreferences.getString(any())).thenReturn(null);
-    when(() => mockSharedPreferences.setStringList(any(), any())).thenAnswer((_) async => true);
-    when(() => mockSharedPreferences.setString(any(), any())).thenAnswer((_) async => true);
+    when(
+      () => mockSharedPreferences.setStringList(any(), any()),
+    ).thenAnswer((_) async => true);
+    when(
+      () => mockSharedPreferences.setString(any(), any()),
+    ).thenAnswer((_) async => true);
     when(() => mockWidgetService.updateWidget(any())).thenAnswer((_) async {});
   });
 
@@ -74,7 +85,9 @@ void main() {
   }
 
   testWidgets('NowScreen shows no weather state', (tester) async {
-    when(() => mockLocationService.canAccessLocation()).thenAnswer((_) async => false);
+    when(
+      () => mockLocationService.canAccessLocation(),
+    ).thenAnswer((_) async => false);
 
     await tester.pumpWidget(wrap(const NowScreen()));
     await tester.pumpAndSettle();
@@ -98,21 +111,29 @@ void main() {
       source: LocationSource.gps,
     );
 
-    when(() => mockLocationService.canAccessLocation()).thenAnswer((_) async => true);
-    when(() => mockLocationService.getCurrentPosition()).thenAnswer((_) async => mockPosition);
-    when(() => mockWeatherRepository.resolveLocation(
-      latitude: any(named: 'latitude'),
-      longitude: any(named: 'longitude'),
-    )).thenAnswer((_) async => location);
+    when(
+      () => mockLocationService.canAccessLocation(),
+    ).thenAnswer((_) async => true);
+    when(
+      () => mockLocationService.getCurrentPosition(),
+    ).thenAnswer((_) async => mockPosition);
+    when(
+      () => mockWeatherRepository.resolveLocation(
+        latitude: any(named: 'latitude'),
+        longitude: any(named: 'longitude'),
+      ),
+    ).thenAnswer((_) async => location);
 
-    when(() => mockWeatherRepository.getWeather(
-      location: any(named: 'location'),
-      units: any(named: 'units'),
-      languageCode: any(named: 'languageCode'),
-    )).thenThrow(const OpenWeatherApiKeyMissingException());
+    when(
+      () => mockWeatherRepository.getWeather(
+        location: any(named: 'location'),
+        units: any(named: 'units'),
+        languageCode: any(named: 'languageCode'),
+      ),
+    ).thenThrow(const OpenWeatherApiKeyMissingException());
 
     await tester.pumpWidget(wrap(const NowScreen()));
-    
+
     await tester.pump(); // build() starts
     await tester.pump(); // canAccessLocation completes
     await tester.pump(); // getCurrentPosition completes

@@ -56,8 +56,9 @@ class NowScreen extends ConsumerWidget {
                 strings: strings,
                 isFavorite: isFavorite,
                 onToggleFavorite: () {
-                  final favoritesController =
-                      ref.read(favoritesControllerProvider.notifier);
+                  final favoritesController = ref.read(
+                    favoritesControllerProvider.notifier,
+                  );
                   if (isFavorite) {
                     favoritesController.remove(report.location);
                   } else {
@@ -66,21 +67,13 @@ class NowScreen extends ConsumerWidget {
                 },
               );
             },
-            error: (AsyncError<WeatherReport?> error) => _ErrorCard(
-              error: error.error,
-              strings: strings,
-            ),
+            error: (AsyncError<WeatherReport?> error) =>
+                _ErrorCard(error: error.error, strings: strings),
             loading: (AsyncLoading<WeatherReport?> loading) {
               if (loading.hasError) {
-                return _ErrorCard(
-                  error: loading.error!,
-                  strings: strings,
-                );
+                return _ErrorCard(error: loading.error!, strings: strings);
               }
-              return AppStateCard(
-                title: strings.loading,
-                message: '',
-              );
+              return AppStateCard(title: strings.loading, message: '');
             },
           ),
         ],
