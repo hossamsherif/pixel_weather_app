@@ -60,6 +60,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noSearchResultsBody => 'جرب اسم مدينة مختلف.';
 
   @override
+  String get missingApiKeyTitle => 'مفتاح واجهة الطقس مفقود';
+
+  @override
+  String get missingApiKeyBody =>
+      'شغّل التطبيق باستخدام --dart-define=OPENWEATHER_KEY=your_api_key لتحميل بيانات الطقس.';
+
+  @override
   String get loading => 'جارٍ التحميل...';
 
   @override

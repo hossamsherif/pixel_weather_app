@@ -212,8 +212,64 @@ flutter run
 
 The app uses the **OpenWeather** API.
 
-At the moment, the API key is referenced in app configuration for local development/testing.
-If you plan to productionize this app, move the key to a secure environment-based setup.
+### Recommended local setup
+
+Copy the example file:
+
+```bash
+cp env/local.example.json env/local.json
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item env/local.example.json env/local.json
+```
+
+Then add your real key to `env/local.json`:
+
+```json
+{
+  "OPENWEATHER_KEY": "your_openweather_api_key_here"
+}
+```
+
+> `env/local.json` is gitignored, so each developer only needs to create it once after cloning/pulling the repo.
+
+Run the app with the local file:
+
+```bash
+flutter run --dart-define-from-file=env/local.json
+```
+
+VS Code users can also use the included launch configuration:
+- `pixel_weather_app (dev local secrets)`
+
+PowerShell users can use the helper script:
+
+```powershell
+./scripts/run-dev.ps1
+./scripts/run-dev.ps1 -Target test
+./scripts/run-dev.ps1 -Target apk
+```
+
+### Direct alternative
+
+You can also pass the key directly:
+
+```bash
+flutter run --dart-define=OPENWEATHER_KEY=your_api_key_here
+```
+
+Example for tests or other Flutter commands:
+
+```bash
+flutter test --dart-define-from-file=env/local.json
+flutter build apk --dart-define-from-file=env/local.json
+```
+
+If `OPENWEATHER_KEY` is missing, weather requests will fail with a missing API key error.
+Do not hardcode production secrets in source files.
 
 ---
 
@@ -243,7 +299,6 @@ flutter test
 
 ## 🔮 Possible Next Improvements
 
-- stronger environment-based API key management
 - screenshot/golden testing for core screens
 - native widget tests for iOS and Android widget layers
 - richer weather visuals and animations

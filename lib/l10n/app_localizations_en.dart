@@ -60,6 +60,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSearchResultsBody => 'Try a different city name.';
 
   @override
+  String get missingApiKeyTitle => 'Missing weather API key';
+
+  @override
+  String get missingApiKeyBody =>
+      'Run the app with --dart-define=OPENWEATHER_KEY=your_api_key to load weather data.';
+
+  @override
   String get loading => 'Loading...';
 
   @override

@@ -5,6 +5,7 @@ import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
 import 'package:pixel_weather_app/l10n/app_localizations.dart';
+import 'package:pixel_weather_app/data/open_weather/open_weather_exceptions.dart';
 import 'package:pixel_weather_app/presentation/screens/now_screen.dart';
 import 'package:pixel_weather_app/presentation/state/favorites_controller.dart';
 import 'package:pixel_weather_app/presentation/state/location_service.dart';
@@ -62,6 +63,33 @@ void main() {
 
     expect(find.byType(AppStateCard), findsOneWidget);
     expect(find.byType(Card), findsWidgets);
+  });
+
+  testWidgets('NowScreen shows missing API key message', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        const NowScreen(),
+        overrides: [
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(
+              AsyncValue.error(
+                const OpenWeatherApiKeyMissingException(),
+                StackTrace.current,
+              ),
+            ),
+          ),
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController(const []),
+          ),
+          unitsProvider.overrideWith(_UnitsController.new),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Missing weather API key'), findsOneWidget);
+    expect(find.textContaining('OPENWEATHER_KEY'), findsOneWidget);
   });
 }
 

@@ -18,8 +18,8 @@ void main() {
       expect(AppRoutes.search, 'search');
     });
 
-    test('AppConfig exposes non-empty weather key', () {
-      expect(AppConfig.openWeatherKey, isNotEmpty);
+    test('AppConfig exposes weather key define as string', () {
+      expect(AppConfig.openWeatherKey, isA<String>());
     });
 
     test('Units extension values map correctly', () {
