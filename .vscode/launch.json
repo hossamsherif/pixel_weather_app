@@ -5,22 +5,40 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "pixel_weather_app (dev local secrets)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--dart-define-from-file=env/local.json"
+            ]
+        },
+        {
             "name": "pixel_weather_app",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug"
+            "flutterMode": "debug",
+            "toolArgs": [
+                "--dart-define-from-file=env/local.json"
+            ]
         },
         {
             "name": "pixel_weather_app (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "toolArgs": [
+                "--dart-define-from-file=env/local.json"
+            ]
         },
         {
             "name": "pixel_weather_app (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "toolArgs": [
+                "--dart-define-from-file=env/local.json"
+            ]
         }
     ]
 }

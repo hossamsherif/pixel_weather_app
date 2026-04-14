@@ -16,6 +16,8 @@
   "locationTimeoutBody": "We couldn't get a GPS fix. Try again or search for a city.",
   "noSearchResultsTitle": "No results",
   "noSearchResultsBody": "Try a different city name.",
+  "missingApiKeyTitle": "Missing weather API key",
+  "missingApiKeyBody": "Run the app with --dart-define=OPENWEATHER_KEY=your_api_key to load weather data.",
   "loading": "Loading...",
   "errorGeneric": "Something went wrong.",
   "retry": "Retry",

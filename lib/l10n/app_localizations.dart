@@ -194,6 +194,18 @@ abstract class AppLocalizations {
   /// **'Try a different city name.'**
   String get noSearchResultsBody;
 
+  /// No description provided for @missingApiKeyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing weather API key'**
+  String get missingApiKeyTitle;
+
+  /// No description provided for @missingApiKeyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Run the app with --dart-define=OPENWEATHER_KEY=your_api_key to load weather data.'**
+  String get missingApiKeyBody;
+
   /// No description provided for @loading.
   ///
   /// In en, this message translates to:

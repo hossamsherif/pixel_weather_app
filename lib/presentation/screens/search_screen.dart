@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/open_weather/open_weather_exceptions.dart';
 import '../../domain/models/location.dart';
 import '../../l10n/app_localizations.dart';
 import '../state/providers.dart';
@@ -119,11 +120,21 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               message: strings.loading,
               icon: Icons.hourglass_top,
             ),
-            error: (Object error, StackTrace stackTrace) => AppStateCard(
-              title: strings.errorGeneric,
-              message: error.toString(),
-              icon: Icons.error_outline,
-            ),
+            error: (Object error, StackTrace stackTrace) {
+              if (error is OpenWeatherApiKeyMissingException) {
+                return AppStateCard(
+                  title: strings.missingApiKeyTitle,
+                  message: strings.missingApiKeyBody,
+                  icon: Icons.key_off_outlined,
+                );
+              }
+
+              return AppStateCard(
+                title: strings.errorGeneric,
+                message: error.toString(),
+                icon: Icons.error_outline,
+              );
+            },
           ),
         ],
       ),

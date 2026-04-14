@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 
 import '../../app_routes.dart';
+import '../../data/open_weather/open_weather_exceptions.dart';
 import '../../domain/models/units.dart';
 import '../../domain/models/weather.dart';
 import '../../l10n/app_localizations.dart';
@@ -225,6 +226,14 @@ class _ErrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (error is OpenWeatherApiKeyMissingException) {
+      return AppStateCard(
+        title: strings.missingApiKeyTitle,
+        message: strings.missingApiKeyBody,
+        icon: Icons.key_off_outlined,
+      );
+    }
+
     if (error is LocationServiceException) {
       final LocationServiceException exception =
           error as LocationServiceException;
