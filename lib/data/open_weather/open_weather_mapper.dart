@@ -107,6 +107,7 @@ class OpenWeatherMapper {
     return WeatherCondition(
       type: _mapConditionType(condition.id),
       description: condition.description,
+      iconCode: condition.icon,
     );
   }
 

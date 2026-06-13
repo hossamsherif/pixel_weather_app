@@ -3,10 +3,19 @@ import 'location.dart';
 enum WeatherConditionType { clear, clouds, rain, thunder, snow, fog, unknown }
 
 class WeatherCondition {
-  const WeatherCondition({required this.type, required this.description});
+  const WeatherCondition({
+    required this.type,
+    required this.description,
+    this.iconCode,
+  });
 
   final WeatherConditionType type;
   final String description;
+  final String? iconCode;
+
+  bool get hasDayIcon => iconCode?.endsWith('d') ?? false;
+
+  bool get hasNightIcon => iconCode?.endsWith('n') ?? false;
 }
 
 class CurrentWeather {

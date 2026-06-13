@@ -53,6 +53,9 @@ void main() {
     expect(report.hourly.length, 24);
     expect(report.daily.length, 5);
     expect(report.current.temperature, 280);
+    expect(report.current.condition.iconCode, '01d');
+    expect(report.hourly.first.condition.iconCode, '01d');
+    expect(report.daily.first.condition.iconCode, '01d');
     expect(report.daily.first.minTemp, 279);
     expect(report.daily.first.maxTemp, 281);
     expect(report.daily.first.date.year, 2025);
