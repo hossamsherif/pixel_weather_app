@@ -87,6 +87,10 @@ void main() {
 
       expect(find.byType(WeatherSummaryCard), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
+      if (locale.languageCode == 'ar') {
+        final Text windValue = tester.widget<Text>(find.text('4 m/s'));
+        expect(windValue.textDirection, TextDirection.ltr);
+      }
       expect(tester.takeException(), isNull);
     });
   }

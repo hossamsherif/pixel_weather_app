@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -284,6 +286,7 @@ class _StatItem extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 value,
+                textDirection: ui.TextDirection.ltr,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: textTheme.titleMedium?.copyWith(
