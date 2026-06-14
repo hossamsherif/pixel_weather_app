@@ -30,16 +30,7 @@ class WeatherSummaryCard extends StatelessWidget {
     final String locale = Localizations.localeOf(context).toString();
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final PixelWeatherTokens pixel =
-        Theme.of(context).extension<PixelWeatherTokens>() ??
-        PixelWeatherTokens(
-          border: scheme.primary,
-          hudFill: scheme.primaryContainer.withValues(alpha: 0.2),
-          spriteBackdrop: scheme.surfaceContainerHighest,
-          spriteShadow: scheme.shadow.withValues(alpha: 0.24),
-          temperatureAccent: scheme.primary,
-          statAccent: scheme.tertiary,
-        );
+    final PixelWeatherTokens pixel = PixelWeatherTokens.of(context);
     final CurrentWeather current = report.current;
     final String updated = DateFormat.yMMMd(
       locale,
@@ -226,7 +217,7 @@ class _SpritePane extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: pixel.spriteBackdrop,
-          border: Border.all(color: pixel.border, width: 2),
+          border: Border.all(color: pixel.spriteFrame, width: 2),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../app_routes.dart';
+import '../../core/theme/app_theme.dart';
 import '../../domain/models/location.dart';
 import '../../domain/models/units.dart';
 import '../../domain/models/weather.dart';
@@ -114,6 +115,7 @@ class _FavoriteRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Units units = ref.watch(unitsProvider);
+    final PixelWeatherTokens pixel = PixelWeatherTokens.of(context);
     final AsyncValue<WeatherReport?> cachedWeather = ref.watch(
       favoriteWeatherProvider(favorite),
     );
@@ -147,6 +149,10 @@ class _FavoriteRow extends ConsumerWidget {
         tag: _favoriteHeroTag(favorite),
         flightShuttleBuilder: _favoriteHeroFlightShuttle,
         child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+            side: BorderSide(color: pixel.favoriteRowAccent, width: 1.2),
+          ),
           child: ListTile(
             title: Text(favorite.displayName),
             subtitle: Text(favorite.cacheKey),

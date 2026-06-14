@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pixel_weather_app/core/theme/app_theme.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
@@ -103,6 +104,8 @@ Widget _wrap(Widget child, {required List overrides}) {
   return ProviderScope(
     overrides: List.castFrom(overrides),
     child: MaterialApp(
+      theme: AppTheme.lightTheme(),
+      darkTheme: AppTheme.darkTheme(),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: child,

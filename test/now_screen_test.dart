@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:pixel_weather_app/core/theme/app_theme.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
@@ -86,6 +87,8 @@ void main() {
         widgetServiceProvider.overrideWithValue(mockWidgetService),
       ],
       child: MaterialApp(
+        theme: AppTheme.lightTheme(),
+        darkTheme: AppTheme.darkTheme(),
         locale: const Locale('en'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

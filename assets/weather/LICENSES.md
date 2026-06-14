@@ -1,12 +1,31 @@
-# Pixel Weather Assets
+# Pixel Weather Asset Licenses
 
 ## Exported sprite family
 
 - Location: `assets/weather/pixel/exported/`
 - Status: custom project-generated raster sprites for this prototype.
-- License: owned by this project; no third-party sprite files are redistributed.
+- License: project-owned generated artwork; no third-party sprite files are redistributed.
+- Attribution required: none for bundled files.
+- Redistribution: safe to ship with the app under the app's project license.
 - Canvas: 64x64 transparent PNG, nearest-neighbor pixel geometry.
 - Variants: day and night for clear, clouds, rain/drizzle, snow/sleet, thunder, fog/atmosphere, and unknown fallback.
+
+Bundled exported files:
+
+- `assets/weather/pixel/exported/day/clear.png`
+- `assets/weather/pixel/exported/day/clouds.png`
+- `assets/weather/pixel/exported/day/fog.png`
+- `assets/weather/pixel/exported/day/rain.png`
+- `assets/weather/pixel/exported/day/snow.png`
+- `assets/weather/pixel/exported/day/thunder.png`
+- `assets/weather/pixel/exported/day/unknown.png`
+- `assets/weather/pixel/exported/night/clear.png`
+- `assets/weather/pixel/exported/night/clouds.png`
+- `assets/weather/pixel/exported/night/fog.png`
+- `assets/weather/pixel/exported/night/rain.png`
+- `assets/weather/pixel/exported/night/snow.png`
+- `assets/weather/pixel/exported/night/thunder.png`
+- `assets/weather/pixel/exported/night/unknown.png`
 
 ## Reference material
 
@@ -21,3 +40,7 @@ No reference assets are bundled in this repository. The sprite family was genera
 - `assets/weather/pixel/edited/`: normalized palette and bounding-box versions.
 - `assets/weather/pixel/exported/`: app-consumed final PNGs registered in `pubspec.yaml`.
 - `assets/weather/pixel/contact_sheet.png`: visual review sheet for the full family.
+
+## Licensing gate
+
+No CC BY-SA, GPL, trademarked, scraped, or third-party sprite dependency is included. Future additions must document source URL or generator, license, attribution text, edit status, and redistribution constraints before being registered in `pubspec.yaml`.
