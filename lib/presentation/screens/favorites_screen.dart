@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import '../../app_routes.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/temperature_text_style.dart';
 import '../../domain/models/location.dart';
 import '../../domain/models/units.dart';
 import '../../domain/models/weather.dart';
@@ -293,12 +294,12 @@ class _WeatherTrailing extends StatelessWidget {
                 overflow: TextOverflow.visible,
                 softWrap: false,
                 textAlign: TextAlign.end,
-                style: textTheme.titleSmall?.copyWith(
-                  color: pixel.temperatureAccent,
-                  fontWeight: FontWeight.w800,
-                  fontFeatures: const <ui.FontFeature>[
-                    ui.FontFeature.tabularFigures(),
-                  ],
+                style: temperaturePixelTextStyle(
+                  context,
+                  textTheme.titleSmall?.copyWith(
+                    color: pixel.temperatureAccent,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
             ),

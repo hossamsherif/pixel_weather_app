@@ -7,6 +7,7 @@ import '../../domain/models/units.dart';
 import '../../domain/models/weather.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/temperature_text_style.dart';
 import 'condition_asset.dart';
 
 class WeatherSummaryCard extends StatelessWidget {
@@ -111,10 +112,13 @@ class WeatherSummaryCard extends StatelessWidget {
                               child: Text(
                                 temperature,
                                 maxLines: 1,
-                                style: textTheme.displayMedium?.copyWith(
-                                  color: pixel.temperatureAccent,
-                                  fontWeight: FontWeight.w800,
-                                  height: 0.92,
+                                style: temperaturePixelTextStyle(
+                                  context,
+                                  textTheme.displayMedium?.copyWith(
+                                    color: pixel.temperatureAccent,
+                                    fontWeight: FontWeight.w800,
+                                    height: 0.92,
+                                  ),
                                 ),
                               ),
                             ),
