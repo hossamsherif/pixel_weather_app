@@ -1,7 +1,10 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:pixel_weather_app/core/theme/app_theme.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 
 import '../../app_routes.dart';
@@ -12,7 +15,7 @@ import '../../l10n/app_localizations.dart';
 import '../state/location_service.dart';
 import '../state/providers.dart';
 import '../widgets/app_state_card.dart';
-import '../widgets/condition_icon.dart';
+import '../widgets/condition_asset.dart';
 import '../widgets/weather_summary_card.dart';
 
 class ForecastScreen extends ConsumerWidget {
@@ -148,8 +151,9 @@ class ForecastScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 12),
                       SizedBox(
-                        height: 120,
+                        height: 132,
                         child: ListView.separated(
+                          padding: const EdgeInsetsDirectional.only(end: 4),
                           scrollDirection: Axis.horizontal,
                           itemCount: report.hourly.length,
                           separatorBuilder: (context, index) =>
@@ -279,6 +283,10 @@ class _ErrorCard extends StatelessWidget {
 class _HourlyForecastCard extends StatelessWidget {
   const _HourlyForecastCard({required this.forecast, required this.units});
 
+  static const Key spriteKey = Key('forecast-hourly-sprite');
+  static const double width = 92;
+  static const double height = 132;
+
   final HourlyForecast forecast;
   final Units units;
 
@@ -286,35 +294,104 @@ class _HourlyForecastCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final String locale = Localizations.localeOf(context).toString();
     final String time = DateFormat.Hm(locale).format(forecast.time);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(time),
-            const SizedBox(height: 6),
-            Icon(iconForCondition(forecast.condition.type), size: 20),
-            const SizedBox(height: 6),
-            Text('${forecast.temperature.round()}°${_temperatureUnit(units)}'),
+    final ThemeData theme = Theme.of(context);
+    final PixelWeatherTokens tokens = PixelWeatherTokens.of(context);
+    final TextTheme textTheme = theme.textTheme;
+    final String temperature = _temperatureLabel(forecast.temperature, units);
+    final String? precipitation = _precipitationLabel(
+      forecast.precipitationChance,
+    );
+
+    return SizedBox(
+      width: width,
+      height: height,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: tokens.forecastCardFill,
+          border: Border.all(color: tokens.forecastCardBorder, width: 1.5),
+          borderRadius: BorderRadius.circular(6),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: tokens.spriteShadow,
+              offset: const Offset(0, 2),
+              blurRadius: 0,
+            ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Directionality(
+                textDirection: ui.TextDirection.ltr,
+                child: Text(
+                  time,
+                  maxLines: 1,
+                  overflow: TextOverflow.fade,
+                  textAlign: TextAlign.center,
+                  softWrap: false,
+                  style: textTheme.labelMedium,
+                ),
+              ),
+              Align(
+                alignment: AlignmentDirectional.center,
+                child: _PixelForecastSprite(
+                  key: spriteKey,
+                  condition: forecast.condition,
+                  isDay: _isDayForForecastCondition(
+                    forecast.condition,
+                    at: forecast.time,
+                  ),
+                  size: 42,
+                ),
+              ),
+              Directionality(
+                textDirection: ui.TextDirection.ltr,
+                child: Text(
+                  temperature,
+                  maxLines: 1,
+                  overflow: TextOverflow.visible,
+                  textAlign: TextAlign.center,
+                  softWrap: false,
+                  style: textTheme.titleMedium?.copyWith(
+                    color: tokens.temperatureAccent,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 18,
+                child: precipitation == null
+                    ? const SizedBox.shrink()
+                    : Directionality(
+                        textDirection: ui.TextDirection.ltr,
+                        child: Text(
+                          precipitation,
+                          maxLines: 1,
+                          overflow: TextOverflow.visible,
+                          textAlign: TextAlign.center,
+                          softWrap: false,
+                          style: textTheme.labelSmall?.copyWith(
+                            color: tokens.statAccent,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+              ),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  String _temperatureUnit(Units units) {
-    switch (units) {
-      case Units.metric:
-        return 'C';
-      case Units.imperial:
-        return 'F';
-    }
   }
 }
 
 class _DailyForecastTile extends StatelessWidget {
   const _DailyForecastTile({required this.forecast, required this.units});
+
+  static const Key spriteKey = Key('forecast-daily-sprite');
 
   final DailyForecast forecast;
   final Units units;
@@ -323,27 +400,199 @@ class _DailyForecastTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final String locale = Localizations.localeOf(context).toString();
     final String dayLabel = DateFormat.E(locale).format(forecast.date);
-    return Card(
-      child: ListTile(
-        leading: Icon(iconForCondition(forecast.condition.type)),
-        title: Text(dayLabel),
-        subtitle: Text(forecast.condition.description),
-        trailing: Text(
-          '${forecast.maxTemp.round()}° / '
-          '${forecast.minTemp.round()}°${_temperatureUnit(units)}',
+    final ThemeData theme = Theme.of(context);
+    final PixelWeatherTokens tokens = PixelWeatherTokens.of(context);
+    final TextTheme textTheme = theme.textTheme;
+    final String highLow =
+        '${forecast.maxTemp.round()}° / '
+        '${forecast.minTemp.round()}°${_temperatureUnit(units)}';
+    final String? precipitation = _precipitationLabel(
+      forecast.precipitationChance,
+    );
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 82),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: tokens.forecastCardFill,
+          border: Border.all(color: tokens.forecastCardBorder, width: 1.5),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 12, 10),
+          child: Row(
+            textDirection: Directionality.of(context),
+            children: <Widget>[
+              _PixelForecastSprite(
+                key: spriteKey,
+                condition: forecast.condition,
+                isDay: _isDayForForecastCondition(
+                  forecast.condition,
+                  at: forecast.date,
+                  sunrise: forecast.sunrise,
+                  sunset: forecast.sunset,
+                ),
+                size: 48,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      dayLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      forecast.condition.description,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              SizedBox(
+                width: 86,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Directionality(
+                      textDirection: ui.TextDirection.ltr,
+                      child: Text(
+                        highLow,
+                        maxLines: 1,
+                        overflow: TextOverflow.visible,
+                        softWrap: false,
+                        textAlign: TextAlign.end,
+                        style: textTheme.titleSmall?.copyWith(
+                          color: tokens.temperatureAccent,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 18,
+                      child: precipitation == null
+                          ? const SizedBox.shrink()
+                          : Directionality(
+                              textDirection: ui.TextDirection.ltr,
+                              child: Text(
+                                precipitation,
+                                maxLines: 1,
+                                overflow: TextOverflow.visible,
+                                softWrap: false,
+                                textAlign: TextAlign.end,
+                                style: textTheme.labelSmall?.copyWith(
+                                  color: tokens.statAccent,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
 
-  String _temperatureUnit(Units units) {
-    switch (units) {
-      case Units.metric:
-        return 'C';
-      case Units.imperial:
-        return 'F';
-    }
+class _PixelForecastSprite extends StatelessWidget {
+  const _PixelForecastSprite({
+    super.key,
+    required this.condition,
+    required this.isDay,
+    required this.size,
+  });
+
+  final WeatherCondition condition;
+  final bool isDay;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final PixelWeatherTokens tokens = PixelWeatherTokens.of(context);
+    return SizedBox.square(
+      dimension: size,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: tokens.spriteBackdrop,
+          border: Border.all(color: tokens.spriteFrame, width: 1.2),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Image(
+            image: conditionImageFor(condition, isDay: isDay),
+            filterQuality: FilterQuality.none,
+            fit: BoxFit.contain,
+            isAntiAlias: false,
+          ),
+        ),
+      ),
+    );
   }
+}
+
+bool _isDayForForecastCondition(
+  WeatherCondition condition, {
+  required DateTime at,
+  DateTime? sunrise,
+  DateTime? sunset,
+}) {
+  if (condition.hasDayIcon) {
+    return true;
+  }
+  if (condition.hasNightIcon) {
+    return false;
+  }
+
+  if (sunrise != null && sunset != null) {
+    return !at.isBefore(sunrise) && at.isBefore(sunset);
+  }
+
+  // Daily forecasts use their representative condition icon when available.
+  // Without one, keep the fallback deterministic and daylight-biased because
+  // the forecast date itself has no reliable hour from OpenWeather's daily row.
+  if (at.hour == 0 && at.minute == 0) {
+    return true;
+  }
+
+  return at.hour >= 6 && at.hour < 18;
+}
+
+String _temperatureLabel(double value, Units units) {
+  return '${value.round()}°${_temperatureUnit(units)}';
+}
+
+String _temperatureUnit(Units units) {
+  switch (units) {
+    case Units.metric:
+      return 'C';
+    case Units.imperial:
+      return 'F';
+  }
+}
+
+String? _precipitationLabel(double? chance) {
+  if (chance == null) {
+    return null;
+  }
+  return '${(chance * 100).round()}%';
 }
 
 String _favoriteHeroTag(WeatherLocation location) {

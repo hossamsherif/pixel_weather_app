@@ -98,19 +98,103 @@ void main() {
 
     expect(find.byIcon(Icons.star), findsOneWidget);
   });
+
+  testWidgets('Forecast cards use pixel sprites and icon-code day/night', (
+    tester,
+  ) async {
+    final report = _report(hourly: _hourly(), daily: _daily());
+
+    await tester.pumpWidget(
+      _wrap(
+        const ForecastScreen(),
+        overrides: [
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(report),
+          ),
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController(const []),
+          ),
+          unitsProvider.overrideWith(_UnitsController.new),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(
+      _assetNamesForKey(const Key('forecast-hourly-sprite')),
+      contains('assets/weather/pixel/exported/night/clouds.png'),
+    );
+    expect(
+      _assetNamesForKey(const Key('forecast-daily-sprite')),
+      contains('assets/weather/pixel/exported/day/clear.png'),
+    );
+    expect(find.text('35%'), findsOneWidget);
+    expect(find.text('55%'), findsOneWidget);
+  });
+
+  testWidgets('Forecast cards keep Arabic mixed number labels stable', (
+    tester,
+  ) async {
+    final report = _report(hourly: _hourly(), daily: _daily());
+
+    await tester.pumpWidget(
+      _wrapWithLocale(
+        const ForecastScreen(),
+        locale: const Locale('ar'),
+        overrides: [
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(report),
+          ),
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController(const []),
+          ),
+          unitsProvider.overrideWith(_UnitsController.new),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('19°C'), findsOneWidget);
+    expect(find.text('24° / 16°C'), findsOneWidget);
+    expect(find.text('35%'), findsOneWidget);
+    expect(find.text('55%'), findsOneWidget);
+    expect(find.text('كل ساعة'), findsOneWidget);
+    expect(find.text('٥ أيام'), findsOneWidget);
+  });
 }
 
 Widget _wrap(Widget child, {required List overrides}) {
+  return _wrapWithLocale(child, overrides: overrides);
+}
+
+Widget _wrapWithLocale(
+  Widget child, {
+  required List overrides,
+  Locale locale = const Locale('en'),
+}) {
   return ProviderScope(
     overrides: List.castFrom(overrides),
     child: MaterialApp(
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
+      locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: child,
     ),
   );
+}
+
+List<String> _assetNamesForKey(Key key) {
+  return find
+      .descendant(of: find.byKey(key), matching: find.byType(Image))
+      .evaluate()
+      .map((element) => element.widget)
+      .whereType<Image>()
+      .map((image) => (image.image as AssetImage).assetName)
+      .toList();
 }
 
 WeatherLocation _location() {
@@ -152,11 +236,13 @@ List<HourlyForecast> _hourly() {
   return <HourlyForecast>[
     HourlyForecast(
       time: DateTime(2024, 1, 1, 12),
-      temperature: 20,
+      temperature: 19,
       condition: const WeatherCondition(
         type: WeatherConditionType.clouds,
         description: 'Clouds',
+        iconCode: '03n',
       ),
+      precipitationChance: 0.35,
     ),
   ];
 }
@@ -171,6 +257,7 @@ List<DailyForecast> _daily() {
         type: WeatherConditionType.clear,
         description: 'Clear',
       ),
+      precipitationChance: 0.55,
     ),
   ];
 }
