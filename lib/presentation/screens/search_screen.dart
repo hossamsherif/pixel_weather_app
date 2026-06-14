@@ -138,6 +138,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 message: error.toString(),
                 variant: AppStateCardVariant.error,
                 icon: Icons.error_outline,
+                actionLabel: strings.retry,
+                onAction: () => ref.invalidate(searchResultsProvider),
               );
             },
           ),
