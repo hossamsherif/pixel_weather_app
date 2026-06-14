@@ -33,6 +33,7 @@ class NowScreen extends ConsumerWidget {
                 return AppStateCard(
                   title: strings.emptyNowTitle,
                   message: strings.emptyNowBody,
+                  variant: AppStateCardVariant.location,
                   icon: Icons.location_searching,
                   actionLabel: strings.useMyLocation,
                   onAction: () {
@@ -70,7 +71,12 @@ class NowScreen extends ConsumerWidget {
               if (loading.hasError) {
                 return _ErrorCard(error: loading.error!, strings: strings);
               }
-              return AppStateCard(title: strings.loading, message: '');
+              return AppStateCard(
+                title: strings.loading,
+                message: strings.loading,
+                variant: AppStateCardVariant.loading,
+                icon: Icons.hourglass_top,
+              );
             },
           ),
         ],
@@ -91,6 +97,7 @@ class _ErrorCard extends ConsumerWidget {
       return AppStateCard(
         title: strings.missingApiKeyTitle,
         message: strings.missingApiKeyBody,
+        variant: AppStateCardVariant.apiKey,
         icon: Icons.key_off,
       );
     }
@@ -103,6 +110,7 @@ class _ErrorCard extends ConsumerWidget {
           return AppStateCard(
             title: strings.locationServicesDisabledTitle,
             message: strings.locationServicesDisabledBody,
+            variant: AppStateCardVariant.location,
             icon: Icons.location_off,
             actionLabel: strings.retry,
             onAction: () {
@@ -115,6 +123,7 @@ class _ErrorCard extends ConsumerWidget {
           return AppStateCard(
             title: strings.locationPermissionDeniedTitle,
             message: strings.locationPermissionDeniedBody,
+            variant: AppStateCardVariant.location,
             icon: Icons.location_disabled,
             actionLabel: strings.retry,
             onAction: () {
@@ -127,12 +136,14 @@ class _ErrorCard extends ConsumerWidget {
           return AppStateCard(
             title: strings.locationPermissionDeniedTitle,
             message: strings.locationPermissionDeniedBody,
+            variant: AppStateCardVariant.location,
             icon: Icons.location_disabled,
           );
         case LocationServiceError.timeout:
           return AppStateCard(
             title: strings.locationTimeoutTitle,
             message: strings.locationTimeoutBody,
+            variant: AppStateCardVariant.location,
             icon: Icons.timer_off,
             actionLabel: strings.retry,
             onAction: () {
@@ -147,6 +158,7 @@ class _ErrorCard extends ConsumerWidget {
     return AppStateCard(
       title: strings.errorGeneric,
       message: error.toString(),
+      variant: AppStateCardVariant.error,
       icon: Icons.error_outline,
       actionLabel: strings.retry,
       onAction: () {

@@ -39,6 +39,7 @@ class FavoritesScreen extends ConsumerWidget {
                   Localizations.localeOf(context).toString(),
                 ).add_Hm().format(currentReport.updatedAt),
               ),
+              variant: AppStateCardVariant.offline,
               icon: Icons.cloud_off_outlined,
             ),
           )
@@ -52,6 +53,7 @@ class FavoritesScreen extends ConsumerWidget {
               AppStateCard(
                 title: strings.emptyFavoritesTitle,
                 message: strings.emptyFavoritesBody,
+                variant: AppStateCardVariant.empty,
                 icon: Icons.favorite_border,
               ),
             ],
