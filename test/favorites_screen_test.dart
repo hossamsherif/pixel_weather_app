@@ -38,7 +38,9 @@ class _WeatherController extends WeatherController {
 }
 
 void main() {
-  testWidgets('FavoritesScreen shows offline badge and list', (tester) async {
+  testWidgets('FavoritesScreen shows pixel offline badge and sprite row', (
+    tester,
+  ) async {
     final favorite = _location();
     final report = _report(
       location: favorite,
@@ -66,7 +68,97 @@ void main() {
     expect(find.text('Offline'), findsOneWidget);
     expect(find.text(favorite.displayName), findsOneWidget);
     expect(find.textContaining('°C'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('favorite-weather-sprite')),
+      findsOneWidget,
+    );
+    expect(find.byType(Image), findsOneWidget);
+    expect(find.byIcon(Icons.cloud_outlined), findsNothing);
   });
+
+  testWidgets('FavoritesScreen renders dark HUD placeholders for cached miss', (
+    tester,
+  ) async {
+    final favorite = _location();
+
+    await tester.pumpWidget(
+      _wrap(
+        const FavoritesScreen(),
+        themeMode: ThemeMode.dark,
+        overrides: [
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController([favorite]),
+          ),
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(null),
+          ),
+          unitsProvider.overrideWith(_UnitsController.new),
+          favoriteWeatherProvider(favorite).overrideWith((ref) async => null),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text(favorite.displayName), findsOneWidget);
+    expect(find.text('--'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
+
+  testWidgets(
+    'FavoritesScreen keeps Arabic row numbers LTR and delete directional',
+    (tester) async {
+      final favorite = _location(
+        name: 'القاهرة',
+        country: 'مصر',
+        latitude: 30.0444,
+        longitude: 31.2357,
+      );
+      final report = _report(location: favorite);
+
+      await tester.pumpWidget(
+        _wrap(
+          const FavoritesScreen(),
+          locale: const Locale('ar'),
+          overrides: [
+            favoritesControllerProvider.overrideWith(
+              () => _FavoritesController([favorite]),
+            ),
+            weatherControllerProvider.overrideWith(
+              () => _WeatherController(report),
+            ),
+            unitsProvider.overrideWith(_UnitsController.new),
+            favoriteWeatherProvider(
+              favorite,
+            ).overrideWith((ref) async => report),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text(favorite.displayName), findsOneWidget);
+      expect(find.text(favorite.cacheKey), findsOneWidget);
+      expect(find.text('18°C'), findsOneWidget);
+
+      final cacheDirection = tester
+          .element(find.text(favorite.cacheKey))
+          .findAncestorWidgetOfExactType<Directionality>();
+      final temperatureDirection = tester
+          .element(find.text('18°C'))
+          .findAncestorWidgetOfExactType<Directionality>();
+      expect(cacheDirection?.textDirection, TextDirection.ltr);
+      expect(temperatureDirection?.textDirection, TextDirection.ltr);
+
+      await tester.drag(find.byType(Dismissible), const Offset(120, 0));
+      await tester.pump();
+
+      final deleteBackground = tester.widget<Container>(
+        find.byKey(const ValueKey<String>('favorite-delete-background')).first,
+      );
+      expect(deleteBackground.alignment, AlignmentDirectional.centerEnd);
+    },
+  );
 
   testWidgets('FavoritesScreen removes favorite on dismiss', (tester) async {
     final favorite = _location();
@@ -96,12 +188,19 @@ void main() {
   });
 }
 
-Widget _wrap(Widget child, {required List overrides}) {
+Widget _wrap(
+  Widget child, {
+  required List overrides,
+  Locale locale = const Locale('en'),
+  ThemeMode themeMode = ThemeMode.light,
+}) {
   return ProviderScope(
     overrides: List.castFrom(overrides),
     child: MaterialApp(
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
+      themeMode: themeMode,
+      locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: child,
@@ -109,12 +208,17 @@ Widget _wrap(Widget child, {required List overrides}) {
   );
 }
 
-WeatherLocation _location() {
-  return const WeatherLocation(
-    name: 'Paris',
-    country: 'France',
-    latitude: 48.8,
-    longitude: 2.3,
+WeatherLocation _location({
+  String name = 'Paris',
+  String country = 'France',
+  double latitude = 48.8,
+  double longitude = 2.3,
+}) {
+  return WeatherLocation(
+    name: name,
+    country: country,
+    latitude: latitude,
+    longitude: longitude,
     source: LocationSource.search,
   );
 }
