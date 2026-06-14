@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:pixel_weather_app/core/theme/app_theme.dart';
+import 'package:pixel_weather_app/core/theme/temperature_text_style.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 
 import '../../app_routes.dart';
@@ -363,9 +364,12 @@ class _HourlyForecastCard extends StatelessWidget {
                   overflow: TextOverflow.visible,
                   textAlign: TextAlign.center,
                   softWrap: false,
-                  style: textTheme.titleMedium?.copyWith(
-                    color: tokens.temperatureAccent,
-                    fontWeight: FontWeight.w700,
+                  style: temperaturePixelTextStyle(
+                    context,
+                    textTheme.titleMedium?.copyWith(
+                      color: tokens.temperatureAccent,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
@@ -483,9 +487,12 @@ class _DailyForecastTile extends StatelessWidget {
                         overflow: TextOverflow.visible,
                         softWrap: false,
                         textAlign: TextAlign.end,
-                        style: textTheme.titleSmall?.copyWith(
-                          color: tokens.temperatureAccent,
-                          fontWeight: FontWeight.w700,
+                        style: temperaturePixelTextStyle(
+                          context,
+                          textTheme.titleSmall?.copyWith(
+                            color: tokens.temperatureAccent,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
