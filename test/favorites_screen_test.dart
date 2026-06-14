@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_weather_app/core/theme/app_theme.dart';
+import 'package:pixel_weather_app/core/theme/temperature_text_style.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
@@ -12,8 +13,12 @@ import 'package:pixel_weather_app/presentation/state/providers.dart';
 import 'package:pixel_weather_app/presentation/state/weather_controller.dart';
 
 class _UnitsController extends UnitsController {
+  _UnitsController([this.initial = Units.metric]);
+
+  final Units initial;
+
   @override
-  Units build() => Units.metric;
+  Units build() => initial;
 }
 
 class _FavoritesController extends FavoritesController {
@@ -149,6 +154,8 @@ void main() {
           .findAncestorWidgetOfExactType<Directionality>();
       expect(cacheDirection?.textDirection, TextDirection.ltr);
       expect(temperatureDirection?.textDirection, TextDirection.ltr);
+      final Text temperature = tester.widget<Text>(find.text('18°C'));
+      expect(temperature.style?.fontFamily, temperaturePixelFontFamily);
 
       await tester.drag(find.byType(Dismissible), const Offset(120, 0));
       await tester.pump();
@@ -186,6 +193,37 @@ void main() {
 
     expect(find.text(favorite.displayName), findsNothing);
   });
+
+  testWidgets(
+    'FavoritesScreen applies pixel numerals to English imperial rows',
+    (tester) async {
+      final favorite = _location();
+      final report = _report(location: favorite);
+
+      await tester.pumpWidget(
+        _wrap(
+          const FavoritesScreen(),
+          overrides: [
+            favoritesControllerProvider.overrideWith(
+              () => _FavoritesController([favorite]),
+            ),
+            weatherControllerProvider.overrideWith(
+              () => _WeatherController(report),
+            ),
+            unitsProvider.overrideWith(() => _UnitsController(Units.imperial)),
+            favoriteWeatherProvider(
+              favorite,
+            ).overrideWith((ref) async => report),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      final Text temperature = tester.widget<Text>(find.text('18°F'));
+      expect(temperature.style?.fontFamily, temperaturePixelFontFamily);
+    },
+  );
 }
 
 Widget _wrap(

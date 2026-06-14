@@ -27,6 +27,17 @@ Bundled exported files:
 - `assets/weather/pixel/exported/night/thunder.png`
 - `assets/weather/pixel/exported/night/unknown.png`
 
+## Handjet temperature font
+
+- Location: `assets/fonts/handjet/Handjet-Regular.ttf`
+- Source: Google Fonts, `google/fonts/ofl/handjet/Handjet[ELGR,ELSH,wght].ttf`
+- App family name: `TemperaturePixel`
+- Usage: temperature value tokens only.
+- License: SIL Open Font License 1.1, bundled at `assets/fonts/handjet/OFL.txt`.
+- Attribution required: retain copyright and license text with redistribution.
+- Redistribution: safe to bundle with the app under OFL 1.1; do not sell the font by itself.
+- Glyph coverage gate: accepted after task research confirmed Western digits, Arabic-Indic digits, degree sign, C, and F render without `.notdef`.
+
 ## Reference material
 
 No reference assets are bundled in this repository. The sprite family was generated as original pixel shapes using the Concept A prompt:
