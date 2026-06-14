@@ -26,19 +26,29 @@ void main() {
       locale: Locale('ar'),
       themeMode: ThemeMode.light,
     ),
+    const _Scenario(
+      name: 'state_cards_dark_ar',
+      locale: Locale('ar'),
+      themeMode: ThemeMode.dark,
+    ),
   ];
 
   for (final _Scenario scenario in scenarios) {
-    testWidgets('captures ${scenario.name}', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(390, 780));
-      await tester.pumpWidget(_VisualApp(scenario: scenario));
-      await tester.pump();
+    testWidgets(
+      'captures ${scenario.name}',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(390, 780));
+        await tester.pumpWidget(_VisualApp(scenario: scenario));
+        await tester.pump();
 
-      await expectLater(
-        find.byType(_VisualApp),
-        matchesGoldenFile('goldens/${scenario.name}.png'),
-      );
-    }, skip: true);
+        await expectLater(
+          find.byType(_VisualApp),
+          matchesGoldenFile('goldens/${scenario.name}.png'),
+        );
+      },
+      // Manual screenshot capture; host font rasterization differs in CI.
+      skip: true,
+    );
   }
 }
 
@@ -80,6 +90,7 @@ class _VisualApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: _withScreenshotFont(AppTheme.lightTheme()),
       darkTheme: _withScreenshotFont(AppTheme.darkTheme()),
       themeMode: scenario.themeMode,
@@ -118,6 +129,17 @@ class _VisualApp extends StatelessWidget {
               const SizedBox(height: 16),
               AppStateCard(
                 title: scenario.locale.languageCode == 'ar'
+                    ? 'أنت غير متصل'
+                    : 'You are offline',
+                message: scenario.locale.languageCode == 'ar'
+                    ? 'سنعرض آخر بيانات محفوظة حتى يعود الاتصال.'
+                    : 'We will show saved weather until the connection returns.',
+                variant: AppStateCardVariant.offline,
+                icon: Icons.wifi_off_outlined,
+              ),
+              const SizedBox(height: 16),
+              AppStateCard(
+                title: scenario.locale.languageCode == 'ar'
                     ? 'تعذر تحميل الطقس'
                     : 'Could not load weather',
                 message: scenario.locale.languageCode == 'ar'
@@ -125,6 +147,62 @@ class _VisualApp extends StatelessWidget {
                     : 'Check the connection, then try again.',
                 variant: AppStateCardVariant.error,
                 icon: Icons.error_outline,
+                actionLabel: scenario.locale.languageCode == 'ar'
+                    ? 'إعادة المحاولة'
+                    : 'Retry',
+                onAction: () {},
+              ),
+              const SizedBox(height: 16),
+              AppStateCard(
+                title: scenario.locale.languageCode == 'ar'
+                    ? 'مفتاح الطقس مفقود'
+                    : 'Weather key missing',
+                message: scenario.locale.languageCode == 'ar'
+                    ? 'أضف مفتاح OpenWeather في ملف البيئة المحلي.'
+                    : 'Add the OpenWeather key to the local environment file.',
+                variant: AppStateCardVariant.apiKey,
+                icon: Icons.key_off_outlined,
+              ),
+              const SizedBox(height: 16),
+              AppStateCard(
+                title: scenario.locale.languageCode == 'ar'
+                    ? 'خدمات الموقع متوقفة'
+                    : 'Location services are off',
+                message: scenario.locale.languageCode == 'ar'
+                    ? 'فعّل خدمات الموقع ثم حاول مرة أخرى.'
+                    : 'Enable location services, then try again.',
+                variant: AppStateCardVariant.location,
+                icon: Icons.location_disabled_outlined,
+                actionLabel: scenario.locale.languageCode == 'ar'
+                    ? 'إعادة المحاولة'
+                    : 'Retry',
+                onAction: () {},
+              ),
+              const SizedBox(height: 16),
+              AppStateCard(
+                title: scenario.locale.languageCode == 'ar'
+                    ? 'انتهت مهلة الموقع'
+                    : 'Location timed out',
+                message: scenario.locale.languageCode == 'ar'
+                    ? 'لم نحصل على موقعك بالسرعة الكافية.'
+                    : 'We could not get your location quickly enough.',
+                variant: AppStateCardVariant.location,
+                icon: Icons.gps_off_outlined,
+                actionLabel: scenario.locale.languageCode == 'ar'
+                    ? 'إعادة المحاولة'
+                    : 'Retry',
+                onAction: () {},
+              ),
+              const SizedBox(height: 16),
+              AppStateCard(
+                title: scenario.locale.languageCode == 'ar'
+                    ? 'لا توجد بيانات توقعات'
+                    : 'No forecast data',
+                message: scenario.locale.languageCode == 'ar'
+                    ? 'لا توجد توقعات ساعية أو يومية لهذا الموقع.'
+                    : 'No hourly or daily forecast is available for this location.',
+                variant: AppStateCardVariant.empty,
+                icon: Icons.cloud_off_outlined,
                 actionLabel: scenario.locale.languageCode == 'ar'
                     ? 'إعادة المحاولة'
                     : 'Retry',

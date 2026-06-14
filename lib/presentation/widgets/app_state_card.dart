@@ -96,17 +96,20 @@ class AppStateCard extends StatelessWidget {
                           ),
                         ] else
                           const SizedBox(height: 24),
-                        if (hasAction) ...<Widget>[
-                          const SizedBox(height: 14),
-                          Align(
-                            alignment: AlignmentDirectional.centerStart,
-                            child: _PixelActionButton(
-                              label: actionLabel!,
-                              onPressed: onAction!,
-                              palette: palette,
-                            ),
-                          ),
-                        ],
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          height: 44,
+                          child: hasAction
+                              ? Align(
+                                  alignment: AlignmentDirectional.centerStart,
+                                  child: _PixelActionButton(
+                                    label: actionLabel!,
+                                    onPressed: onAction!,
+                                    palette: palette,
+                                  ),
+                                )
+                              : const SizedBox.shrink(),
+                        ),
                       ],
                     ),
                   ),
