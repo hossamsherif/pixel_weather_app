@@ -89,6 +89,7 @@ class ForecastScreen extends ConsumerWidget {
                   return AppStateCard(
                     title: strings.emptyNowTitle,
                     message: strings.emptyNowBody,
+                    variant: AppStateCardVariant.location,
                     icon: Icons.location_searching,
                     actionLabel: strings.useMyLocation,
                     onAction: () {
@@ -136,6 +137,7 @@ class ForecastScreen extends ConsumerWidget {
                       AppStateCard(
                         title: strings.forecastUnavailableTitle,
                         message: strings.forecastUnavailableBody,
+                        variant: AppStateCardVariant.empty,
                         icon: Icons.cloud_off_outlined,
                         actionLabel: strings.retry,
                         onAction: () {
@@ -194,6 +196,7 @@ class ForecastScreen extends ConsumerWidget {
               loading: () => AppStateCard(
                 title: strings.loading,
                 message: strings.loading,
+                variant: AppStateCardVariant.loading,
                 icon: Icons.hourglass_top,
               ),
               error: (Object error, StackTrace stackTrace) => _ErrorCard(
@@ -234,6 +237,7 @@ class _ErrorCard extends StatelessWidget {
       return AppStateCard(
         title: strings.missingApiKeyTitle,
         message: strings.missingApiKeyBody,
+        variant: AppStateCardVariant.apiKey,
         icon: Icons.key_off_outlined,
       );
     }
@@ -247,6 +251,7 @@ class _ErrorCard extends StatelessWidget {
           return AppStateCard(
             title: strings.locationPermissionDeniedTitle,
             message: strings.locationPermissionDeniedBody,
+            variant: AppStateCardVariant.location,
             icon: Icons.location_off_outlined,
             actionLabel: strings.retry,
             onAction: onRetry,
@@ -255,6 +260,7 @@ class _ErrorCard extends StatelessWidget {
           return AppStateCard(
             title: strings.locationServicesDisabledTitle,
             message: strings.locationServicesDisabledBody,
+            variant: AppStateCardVariant.location,
             icon: Icons.location_disabled_outlined,
             actionLabel: strings.retry,
             onAction: onRetry,
@@ -263,6 +269,7 @@ class _ErrorCard extends StatelessWidget {
           return AppStateCard(
             title: strings.locationTimeoutTitle,
             message: strings.locationTimeoutBody,
+            variant: AppStateCardVariant.location,
             icon: Icons.gps_off_outlined,
             actionLabel: strings.retry,
             onAction: onRetry,
@@ -273,6 +280,7 @@ class _ErrorCard extends StatelessWidget {
     return AppStateCard(
       title: strings.errorGeneric,
       message: error.toString(),
+      variant: AppStateCardVariant.error,
       icon: Icons.error_outline,
       actionLabel: strings.retry,
       onAction: onRetry,

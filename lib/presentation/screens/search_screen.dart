@@ -66,6 +66,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 return AppStateCard(
                   title: strings.noSearchResultsTitle,
                   message: strings.noSearchResultsBody,
+                  variant: AppStateCardVariant.empty,
                   icon: Icons.search_off_outlined,
                 );
               }
@@ -73,6 +74,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 return AppStateCard(
                   title: strings.searchTitle,
                   message: strings.emptyNowBody,
+                  variant: AppStateCardVariant.empty,
                   icon: Icons.search,
                 );
               }
@@ -118,6 +120,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             loading: () => AppStateCard(
               title: strings.loading,
               message: strings.loading,
+              variant: AppStateCardVariant.loading,
               icon: Icons.hourglass_top,
             ),
             error: (Object error, StackTrace stackTrace) {
@@ -125,6 +128,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 return AppStateCard(
                   title: strings.missingApiKeyTitle,
                   message: strings.missingApiKeyBody,
+                  variant: AppStateCardVariant.apiKey,
                   icon: Icons.key_off_outlined,
                 );
               }
@@ -132,6 +136,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               return AppStateCard(
                 title: strings.errorGeneric,
                 message: error.toString(),
+                variant: AppStateCardVariant.error,
                 icon: Icons.error_outline,
               );
             },
