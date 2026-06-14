@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
 import 'package:pixel_weather_app/presentation/widgets/condition_asset.dart';
@@ -15,10 +17,27 @@ void main() {
         'assets/weather/pixel/exported/day/${type.name}.png',
       );
       expect(
+        File(conditionAssetFor(condition, isDay: true)).existsSync(),
+        isTrue,
+        reason: '${type.name} day sprite must be bundled',
+      );
+      expect(
         conditionAssetFor(condition, isDay: false),
         'assets/weather/pixel/exported/night/${type.name}.png',
       );
+      expect(
+        File(conditionAssetFor(condition, isDay: false)).existsSync(),
+        isTrue,
+        reason: '${type.name} night sprite must be bundled',
+      );
     }
+  });
+
+  test('pubspec registers exported day and night sprite directories', () {
+    final String pubspec = File('pubspec.yaml').readAsStringSync();
+
+    expect(pubspec, contains('assets/weather/pixel/exported/day/'));
+    expect(pubspec, contains('assets/weather/pixel/exported/night/'));
   });
 
   test('isDayForCurrentWeather prefers OpenWeather icon variant', () {

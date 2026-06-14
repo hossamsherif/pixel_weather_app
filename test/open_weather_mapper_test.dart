@@ -62,6 +62,62 @@ void main() {
     expect(report.daily.first.date.month, 1);
     expect(report.daily.first.date.day, 1);
   });
+
+  test('toReportFromForecast preserves iconCode for day and night buckets', () {
+    final OpenWeatherMapper mapper = OpenWeatherMapper();
+    final DateTime start = DateTime.utc(2025, 1, 1, 0);
+    final List<(int, String, WeatherConditionType)> cases =
+        <(int, String, WeatherConditionType)>[
+          (800, '01d', WeatherConditionType.clear),
+          (801, '02n', WeatherConditionType.clouds),
+          (500, '10d', WeatherConditionType.rain),
+          (600, '13n', WeatherConditionType.snow),
+          (201, '11d', WeatherConditionType.thunder),
+          (741, '50n', WeatherConditionType.fog),
+          (999, '99d', WeatherConditionType.unknown),
+        ];
+
+    for (final (int id, String icon, WeatherConditionType type) in cases) {
+      final OpenWeatherForecastResponse forecast = OpenWeatherForecastResponse(
+        list: <OpenWeatherForecastItem>[
+          _forecastItem(
+            dt: start.millisecondsSinceEpoch ~/ 1000,
+            temp: 280,
+            min: 279,
+            max: 281,
+            conditionId: id,
+            icon: icon,
+          ),
+        ],
+        city: OpenWeatherForecastCity(
+          name: 'Test City',
+          country: 'US',
+          timezone: 0,
+          coord: const OpenWeatherCoord(lat: 1, lon: 2),
+        ),
+        cod: 200,
+      );
+
+      final WeatherReport report = mapper.toReportFromForecast(
+        forecast: forecast,
+        current: null,
+        location: const WeatherLocation(
+          latitude: 1,
+          longitude: 2,
+          name: 'Test City',
+          country: 'US',
+          source: LocationSource.search,
+        ),
+        updatedAt: start,
+        dataSource: WeatherDataSource.network,
+      );
+
+      expect(report.current.condition.type, type);
+      expect(report.current.condition.iconCode, icon);
+      expect(report.hourly.single.condition.iconCode, icon);
+      expect(report.daily.single.condition.iconCode, icon);
+    }
+  });
 }
 
 OpenWeatherForecastItem _forecastItem({
@@ -69,6 +125,8 @@ OpenWeatherForecastItem _forecastItem({
   required double temp,
   required double min,
   required double max,
+  int conditionId = 800,
+  String icon = '01d',
 }) {
   return OpenWeatherForecastItem(
     dt: dt,
@@ -82,12 +140,12 @@ OpenWeatherForecastItem _forecastItem({
       seaLevel: null,
       groundLevel: null,
     ),
-    weather: const <OpenWeatherCondition>[
+    weather: <OpenWeatherCondition>[
       OpenWeatherCondition(
-        id: 800,
+        id: conditionId,
         main: 'Clear',
         description: 'clear sky',
-        icon: '01d',
+        icon: icon,
       ),
     ],
     wind: const OpenWeatherWind(speed: 3, deg: 180, gust: null),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pixel_weather_app/core/theme/app_theme.dart';
 import 'package:pixel_weather_app/presentation/widgets/app_state_card.dart';
 
 void main() {
@@ -8,6 +9,7 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        theme: AppTheme.lightTheme(),
         home: Scaffold(
           body: AppStateCard(
             title: 'Title',
@@ -31,9 +33,10 @@ void main() {
 
   testWidgets('AppStateCard renders without icon and action', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
+        theme: AppTheme.lightTheme(),
         home: Scaffold(
-          body: AppStateCard(title: 'Empty', message: 'No actions'),
+          body: const AppStateCard(title: 'Empty', message: 'No actions'),
         ),
       ),
     );

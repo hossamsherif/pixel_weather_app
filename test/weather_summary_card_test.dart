@@ -29,6 +29,8 @@ void main() {
     expect(find.text('Offline'), findsOneWidget);
     expect(find.byIcon(Icons.star), findsOneWidget);
     expect(find.byType(Image), findsOneWidget);
+    final Image sprite = tester.widget<Image>(find.byType(Image));
+    expect(sprite.filterQuality, FilterQuality.none);
 
     await tester.tap(find.byIcon(Icons.star));
     expect(toggled, isTrue);
