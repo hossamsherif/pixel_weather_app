@@ -110,7 +110,7 @@ void main() {
           matchesGoldenFile('goldens/now_surface_${scenario.name}.png'),
         );
       },
-      // Screenshot capture only; run manually with --update-goldens.
+      // Manual screenshot capture; host font rasterization differs in CI.
       skip: true,
     );
 
@@ -131,7 +131,7 @@ void main() {
           matchesGoldenFile('goldens/favorites_surface_${scenario.name}.png'),
         );
       },
-      // Screenshot capture only; run manually with --update-goldens.
+      // Manual screenshot capture; host font rasterization differs in CI.
       skip: true,
     );
   }

@@ -80,19 +80,24 @@ void main() {
   ];
 
   for (final _Scenario scenario in scenarios) {
-    testWidgets('captures ${scenario.name}', (tester) async {
-      await tester.binding.setSurfaceSize(const Size(390, 780));
-      await tester.pumpWidget(_VisualApp(scenario: scenario));
-      await tester.runAsync(() async {
-        await Future<void>.delayed(const Duration(milliseconds: 500));
-      });
-      await tester.pump();
+    testWidgets(
+      'captures ${scenario.name}',
+      (tester) async {
+        await tester.binding.setSurfaceSize(const Size(390, 780));
+        await tester.pumpWidget(_VisualApp(scenario: scenario));
+        await tester.runAsync(() async {
+          await Future<void>.delayed(const Duration(milliseconds: 500));
+        });
+        await tester.pump();
 
-      await expectLater(
-        find.byType(_VisualApp),
-        matchesGoldenFile('goldens/${scenario.name}.png'),
-      );
-    }, skip: true);
+        await expectLater(
+          find.byType(_VisualApp),
+          matchesGoldenFile('goldens/${scenario.name}.png'),
+        );
+      },
+      // Manual screenshot capture; host font rasterization differs in CI.
+      skip: true,
+    );
   }
 }
 

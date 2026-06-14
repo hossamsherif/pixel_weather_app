@@ -166,6 +166,7 @@ class ForecastScreen extends ConsumerWidget {
                             return _HourlyForecastCard(
                               forecast: hour,
                               units: units,
+                              isSelected: index == 0,
                             );
                           },
                         ),
@@ -290,7 +291,11 @@ class _ErrorCard extends StatelessWidget {
 }
 
 class _HourlyForecastCard extends StatelessWidget {
-  const _HourlyForecastCard({required this.forecast, required this.units});
+  const _HourlyForecastCard({
+    required this.forecast,
+    required this.units,
+    required this.isSelected,
+  });
 
   static const Key spriteKey = Key('forecast-hourly-sprite');
   static const double width = 92;
@@ -298,6 +303,7 @@ class _HourlyForecastCard extends StatelessWidget {
 
   final HourlyForecast forecast;
   final Units units;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -306,6 +312,15 @@ class _HourlyForecastCard extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final PixelWeatherTokens tokens = PixelWeatherTokens.of(context);
     final TextTheme textTheme = theme.textTheme;
+    final Color borderColor = isSelected
+        ? tokens.temperatureAccent
+        : tokens.forecastCardBorder;
+    final Color fillColor = isSelected
+        ? Color.alphaBlend(
+            tokens.temperatureAccent.withValues(alpha: 0.12),
+            tokens.forecastCardFill,
+          )
+        : tokens.forecastCardFill;
     final String temperature = _temperatureLabel(forecast.temperature, units);
     final String? precipitation = _precipitationLabel(
       forecast.precipitationChance,
@@ -316,13 +331,13 @@ class _HourlyForecastCard extends StatelessWidget {
       height: height,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: tokens.forecastCardFill,
-          border: Border.all(color: tokens.forecastCardBorder, width: 1.5),
+          color: fillColor,
+          border: Border.all(color: borderColor, width: isSelected ? 3 : 2),
           borderRadius: BorderRadius.circular(6),
           boxShadow: <BoxShadow>[
             BoxShadow(
               color: tokens.spriteShadow,
-              offset: const Offset(0, 2),
+              offset: Offset(0, isSelected ? 3 : 2),
               blurRadius: 0,
             ),
           ],
@@ -427,8 +442,15 @@ class _DailyForecastTile extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: tokens.forecastCardFill,
-          border: Border.all(color: tokens.forecastCardBorder, width: 1.5),
+          border: Border.all(color: tokens.forecastCardBorder, width: 2),
           borderRadius: BorderRadius.circular(6),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: tokens.spriteShadow,
+              offset: const Offset(0, 2),
+              blurRadius: 0,
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 12, 10),
