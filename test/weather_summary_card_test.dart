@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pixel_weather_app/core/theme/temperature_text_style.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
@@ -29,6 +30,8 @@ void main() {
     expect(find.text('Offline'), findsOneWidget);
     expect(find.byIcon(Icons.star), findsOneWidget);
     expect(find.byType(Image), findsOneWidget);
+    final Image sprite = tester.widget<Image>(find.byType(Image));
+    expect(sprite.filterQuality, FilterQuality.none);
 
     await tester.tap(find.byIcon(Icons.star));
     expect(toggled, isTrue);
@@ -87,6 +90,8 @@ void main() {
 
       expect(find.byType(WeatherSummaryCard), findsOneWidget);
       expect(find.byType(Image), findsOneWidget);
+      final Text temperature = tester.widget<Text>(find.text('18°C'));
+      expect(temperature.style?.fontFamily, temperaturePixelFontFamily);
       if (locale.languageCode == 'ar') {
         final Text windValue = tester.widget<Text>(find.text('4 m/s'));
         expect(windValue.textDirection, TextDirection.ltr);

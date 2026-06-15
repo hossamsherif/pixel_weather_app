@@ -7,6 +7,7 @@ import '../../domain/models/units.dart';
 import '../../domain/models/weather.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/theme/temperature_text_style.dart';
 import 'condition_asset.dart';
 
 class WeatherSummaryCard extends StatelessWidget {
@@ -30,16 +31,7 @@ class WeatherSummaryCard extends StatelessWidget {
     final String locale = Localizations.localeOf(context).toString();
     final TextTheme textTheme = Theme.of(context).textTheme;
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final PixelWeatherTokens pixel =
-        Theme.of(context).extension<PixelWeatherTokens>() ??
-        PixelWeatherTokens(
-          border: scheme.primary,
-          hudFill: scheme.primaryContainer.withValues(alpha: 0.2),
-          spriteBackdrop: scheme.surfaceContainerHighest,
-          spriteShadow: scheme.shadow.withValues(alpha: 0.24),
-          temperatureAccent: scheme.primary,
-          statAccent: scheme.tertiary,
-        );
+    final PixelWeatherTokens pixel = PixelWeatherTokens.of(context);
     final CurrentWeather current = report.current;
     final String updated = DateFormat.yMMMd(
       locale,
@@ -120,10 +112,13 @@ class WeatherSummaryCard extends StatelessWidget {
                               child: Text(
                                 temperature,
                                 maxLines: 1,
-                                style: textTheme.displayMedium?.copyWith(
-                                  color: pixel.temperatureAccent,
-                                  fontWeight: FontWeight.w800,
-                                  height: 0.92,
+                                style: temperaturePixelTextStyle(
+                                  context,
+                                  textTheme.displayMedium?.copyWith(
+                                    color: pixel.temperatureAccent,
+                                    fontWeight: FontWeight.w800,
+                                    height: 0.92,
+                                  ),
                                 ),
                               ),
                             ),
@@ -226,7 +221,7 @@ class _SpritePane extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: pixel.spriteBackdrop,
-          border: Border.all(color: pixel.border, width: 2),
+          border: Border.all(color: pixel.spriteFrame, width: 2),
         ),
         child: Padding(
           padding: const EdgeInsets.all(8),

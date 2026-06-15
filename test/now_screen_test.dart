@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:pixel_weather_app/core/theme/app_theme.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
@@ -12,6 +13,7 @@ import 'package:pixel_weather_app/data/open_weather/open_weather_exceptions.dart
 import 'package:pixel_weather_app/presentation/screens/now_screen.dart';
 import 'package:pixel_weather_app/presentation/state/app_providers.dart';
 import 'package:pixel_weather_app/presentation/state/location_service.dart';
+import 'package:pixel_weather_app/presentation/widgets/app_state_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockWeatherRepository extends Mock implements WeatherRepository {}
@@ -77,7 +79,11 @@ void main() {
     when(() => mockWidgetService.updateWidget(any())).thenAnswer((_) async {});
   });
 
-  Widget wrap(Widget child) {
+  Widget wrap(
+    Widget child, {
+    Locale locale = const Locale('en'),
+    ThemeMode themeMode = ThemeMode.light,
+  }) {
     return ProviderScope(
       overrides: [
         weatherRepositoryProvider.overrideWithValue(mockWeatherRepository),
@@ -86,7 +92,10 @@ void main() {
         widgetServiceProvider.overrideWithValue(mockWidgetService),
       ],
       child: MaterialApp(
-        locale: const Locale('en'),
+        theme: AppTheme.lightTheme(),
+        darkTheme: AppTheme.darkTheme(),
+        themeMode: themeMode,
+        locale: locale,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: child,
@@ -150,6 +159,30 @@ void main() {
     final ctx = tester.element(find.byType(NowScreen));
     final s = AppLocalizations.of(ctx)!;
 
+    expect(find.text(s.emptyNowTitle), findsOneWidget);
+    expect(find.text(s.useMyLocation), findsOneWidget);
+  });
+
+  testWidgets('shows Arabic dark empty state with shared HUD card', (
+    tester,
+  ) async {
+    when(
+      () => mockLocationService.canAccessLocation(),
+    ).thenAnswer((_) async => false);
+
+    await tester.pumpWidget(
+      wrap(
+        const NowScreen(),
+        locale: const Locale('ar'),
+        themeMode: ThemeMode.dark,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final ctx = tester.element(find.byType(NowScreen));
+    final s = AppLocalizations.of(ctx)!;
+
+    expect(find.byType(AppStateCard), findsOneWidget);
     expect(find.text(s.emptyNowTitle), findsOneWidget);
     expect(find.text(s.useMyLocation), findsOneWidget);
   });

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pixel_weather_app/core/theme/app_theme.dart';
+import 'package:pixel_weather_app/core/theme/temperature_text_style.dart';
 import 'package:pixel_weather_app/domain/models/location.dart';
 import 'package:pixel_weather_app/domain/models/units.dart';
 import 'package:pixel_weather_app/domain/models/weather.dart';
@@ -11,8 +13,12 @@ import 'package:pixel_weather_app/presentation/state/providers.dart';
 import 'package:pixel_weather_app/presentation/state/weather_controller.dart';
 
 class _UnitsController extends UnitsController {
+  _UnitsController([this.initial = Units.metric]);
+
+  final Units initial;
+
   @override
-  Units build() => Units.metric;
+  Units build() => initial;
 }
 
 class _FavoritesController extends FavoritesController {
@@ -97,17 +103,145 @@ void main() {
 
     expect(find.byIcon(Icons.star), findsOneWidget);
   });
+
+  testWidgets('Forecast cards use pixel sprites and icon-code day/night', (
+    tester,
+  ) async {
+    final report = _report(hourly: _hourly(), daily: _daily());
+
+    await tester.pumpWidget(
+      _wrap(
+        const ForecastScreen(),
+        overrides: [
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(report),
+          ),
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController(const []),
+          ),
+          unitsProvider.overrideWith(_UnitsController.new),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(
+      _assetNamesForKey(const Key('forecast-hourly-sprite')),
+      contains('assets/weather/pixel/exported/night/clouds.png'),
+    );
+    expect(
+      _assetNamesForKey(const Key('forecast-daily-sprite')),
+      contains('assets/weather/pixel/exported/day/clear.png'),
+    );
+    expect(find.text('35%'), findsOneWidget);
+    expect(find.text('55%'), findsOneWidget);
+  });
+
+  testWidgets('Forecast cards keep Arabic mixed number labels stable', (
+    tester,
+  ) async {
+    final report = _report(hourly: _hourly(), daily: _daily());
+
+    await tester.pumpWidget(
+      _wrapWithLocale(
+        const ForecastScreen(),
+        locale: const Locale('ar'),
+        overrides: [
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(report),
+          ),
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController(const []),
+          ),
+          unitsProvider.overrideWith(_UnitsController.new),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('19°C'), findsOneWidget);
+    expect(find.text('24° / 16°C'), findsOneWidget);
+    expect(find.text('35%'), findsOneWidget);
+    expect(find.text('55%'), findsOneWidget);
+    expect(find.text('كل ساعة'), findsOneWidget);
+    expect(find.text('٥ أيام'), findsOneWidget);
+
+    final Text hourlyTemperature = tester.widget<Text>(find.text('19°C'));
+    final Text dailyTemperature = tester.widget<Text>(find.text('24° / 16°C'));
+    expect(hourlyTemperature.style?.fontFamily, temperaturePixelFontFamily);
+    expect(dailyTemperature.style?.fontFamily, temperaturePixelFontFamily);
+
+    final hourlyDirection = tester
+        .element(find.text('19°C'))
+        .findAncestorWidgetOfExactType<Directionality>();
+    final dailyDirection = tester
+        .element(find.text('24° / 16°C'))
+        .findAncestorWidgetOfExactType<Directionality>();
+    expect(hourlyDirection?.textDirection, TextDirection.ltr);
+    expect(dailyDirection?.textDirection, TextDirection.ltr);
+  });
+
+  testWidgets('Forecast temperature numerals cover English imperial labels', (
+    tester,
+  ) async {
+    final report = _report(hourly: _hourly(), daily: _daily());
+
+    await tester.pumpWidget(
+      _wrap(
+        const ForecastScreen(),
+        overrides: [
+          weatherControllerProvider.overrideWith(
+            () => _WeatherController(report),
+          ),
+          favoritesControllerProvider.overrideWith(
+            () => _FavoritesController(const []),
+          ),
+          unitsProvider.overrideWith(() => _UnitsController(Units.imperial)),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final Text hourlyTemperature = tester.widget<Text>(find.text('19°F'));
+    final Text dailyTemperature = tester.widget<Text>(find.text('24° / 16°F'));
+    expect(hourlyTemperature.style?.fontFamily, temperaturePixelFontFamily);
+    expect(dailyTemperature.style?.fontFamily, temperaturePixelFontFamily);
+  });
 }
 
 Widget _wrap(Widget child, {required List overrides}) {
+  return _wrapWithLocale(child, overrides: overrides);
+}
+
+Widget _wrapWithLocale(
+  Widget child, {
+  required List overrides,
+  Locale locale = const Locale('en'),
+}) {
   return ProviderScope(
     overrides: List.castFrom(overrides),
     child: MaterialApp(
+      theme: AppTheme.lightTheme(),
+      darkTheme: AppTheme.darkTheme(),
+      locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: child,
     ),
   );
+}
+
+List<String> _assetNamesForKey(Key key) {
+  return find
+      .descendant(of: find.byKey(key), matching: find.byType(Image))
+      .evaluate()
+      .map((element) => element.widget)
+      .whereType<Image>()
+      .map((image) => (image.image as AssetImage).assetName)
+      .toList();
 }
 
 WeatherLocation _location() {
@@ -149,11 +283,13 @@ List<HourlyForecast> _hourly() {
   return <HourlyForecast>[
     HourlyForecast(
       time: DateTime(2024, 1, 1, 12),
-      temperature: 20,
+      temperature: 19,
       condition: const WeatherCondition(
         type: WeatherConditionType.clouds,
         description: 'Clouds',
+        iconCode: '03n',
       ),
+      precipitationChance: 0.35,
     ),
   ];
 }
@@ -168,6 +304,7 @@ List<DailyForecast> _daily() {
         type: WeatherConditionType.clear,
         description: 'Clear',
       ),
+      precipitationChance: 0.55,
     ),
   ];
 }

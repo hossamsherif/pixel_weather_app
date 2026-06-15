@@ -5,7 +5,13 @@ class PixelWeatherTokens extends ThemeExtension<PixelWeatherTokens> {
   const PixelWeatherTokens({
     required this.border,
     required this.hudFill,
+    required this.forecastCardBorder,
+    required this.forecastCardFill,
+    required this.stateCardAccent,
+    required this.stateCardFill,
+    required this.favoriteRowAccent,
     required this.spriteBackdrop,
+    required this.spriteFrame,
     required this.spriteShadow,
     required this.temperatureAccent,
     required this.statAccent,
@@ -13,16 +19,32 @@ class PixelWeatherTokens extends ThemeExtension<PixelWeatherTokens> {
 
   final Color border;
   final Color hudFill;
+  final Color forecastCardBorder;
+  final Color forecastCardFill;
+  final Color stateCardAccent;
+  final Color stateCardFill;
+  final Color favoriteRowAccent;
   final Color spriteBackdrop;
+  final Color spriteFrame;
   final Color spriteShadow;
   final Color temperatureAccent;
   final Color statAccent;
+
+  static PixelWeatherTokens of(BuildContext context) {
+    return Theme.of(context).extension<PixelWeatherTokens>()!;
+  }
 
   @override
   PixelWeatherTokens copyWith({
     Color? border,
     Color? hudFill,
+    Color? forecastCardBorder,
+    Color? forecastCardFill,
+    Color? stateCardAccent,
+    Color? stateCardFill,
+    Color? favoriteRowAccent,
     Color? spriteBackdrop,
+    Color? spriteFrame,
     Color? spriteShadow,
     Color? temperatureAccent,
     Color? statAccent,
@@ -30,7 +52,13 @@ class PixelWeatherTokens extends ThemeExtension<PixelWeatherTokens> {
     return PixelWeatherTokens(
       border: border ?? this.border,
       hudFill: hudFill ?? this.hudFill,
+      forecastCardBorder: forecastCardBorder ?? this.forecastCardBorder,
+      forecastCardFill: forecastCardFill ?? this.forecastCardFill,
+      stateCardAccent: stateCardAccent ?? this.stateCardAccent,
+      stateCardFill: stateCardFill ?? this.stateCardFill,
+      favoriteRowAccent: favoriteRowAccent ?? this.favoriteRowAccent,
       spriteBackdrop: spriteBackdrop ?? this.spriteBackdrop,
+      spriteFrame: spriteFrame ?? this.spriteFrame,
       spriteShadow: spriteShadow ?? this.spriteShadow,
       temperatureAccent: temperatureAccent ?? this.temperatureAccent,
       statAccent: statAccent ?? this.statAccent,
@@ -45,7 +73,25 @@ class PixelWeatherTokens extends ThemeExtension<PixelWeatherTokens> {
     return PixelWeatherTokens(
       border: Color.lerp(border, other.border, t)!,
       hudFill: Color.lerp(hudFill, other.hudFill, t)!,
+      forecastCardBorder: Color.lerp(
+        forecastCardBorder,
+        other.forecastCardBorder,
+        t,
+      )!,
+      forecastCardFill: Color.lerp(
+        forecastCardFill,
+        other.forecastCardFill,
+        t,
+      )!,
+      stateCardAccent: Color.lerp(stateCardAccent, other.stateCardAccent, t)!,
+      stateCardFill: Color.lerp(stateCardFill, other.stateCardFill, t)!,
+      favoriteRowAccent: Color.lerp(
+        favoriteRowAccent,
+        other.favoriteRowAccent,
+        t,
+      )!,
       spriteBackdrop: Color.lerp(spriteBackdrop, other.spriteBackdrop, t)!,
+      spriteFrame: Color.lerp(spriteFrame, other.spriteFrame, t)!,
       spriteShadow: Color.lerp(spriteShadow, other.spriteShadow, t)!,
       temperatureAccent: Color.lerp(
         temperatureAccent,
@@ -88,7 +134,13 @@ class AppTheme {
         PixelWeatherTokens(
           border: scheme.primary,
           hudFill: scheme.primaryContainer.withValues(alpha: 0.24),
-          spriteBackdrop: const Color(0xFFE9F7FF),
+          forecastCardBorder: scheme.outlineVariant,
+          forecastCardFill: scheme.surfaceContainerLowest,
+          stateCardAccent: scheme.primary,
+          stateCardFill: scheme.primaryContainer.withValues(alpha: 0.18),
+          favoriteRowAccent: scheme.secondary,
+          spriteBackdrop: scheme.primaryContainer.withValues(alpha: 0.16),
+          spriteFrame: scheme.primary,
           spriteShadow: scheme.shadow.withValues(alpha: 0.24),
           temperatureAccent: const Color(0xFFB45309),
           statAccent: scheme.tertiary,
@@ -125,7 +177,13 @@ class AppTheme {
         PixelWeatherTokens(
           border: scheme.primary,
           hudFill: scheme.primaryContainer.withValues(alpha: 0.22),
-          spriteBackdrop: const Color(0xFF0B1F2F),
+          forecastCardBorder: scheme.outlineVariant,
+          forecastCardFill: scheme.surfaceContainerLow,
+          stateCardAccent: scheme.primary,
+          stateCardFill: scheme.primaryContainer.withValues(alpha: 0.16),
+          favoriteRowAccent: scheme.secondary,
+          spriteBackdrop: scheme.primaryContainer.withValues(alpha: 0.18),
+          spriteFrame: scheme.primary,
           spriteShadow: Colors.black.withValues(alpha: 0.48),
           temperatureAccent: const Color(0xFFFBBF24),
           statAccent: scheme.tertiary,
